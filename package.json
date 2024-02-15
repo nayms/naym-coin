@@ -1,0 +1,20 @@
+{
+  "name": "naym-coin",
+  "private": true,
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "prepare": "husky",
+    "build": "forge build",
+    "test": "forge test",
+    "devnet": "anvil"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "devDependencies": {
+    "husky": "^9.0.11"
+  }
+}

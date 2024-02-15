@@ -12,3 +12,6 @@ docs/
 
 # Dotenv file
 .env
+
+# node/bun
+node_modules

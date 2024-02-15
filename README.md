@@ -1,66 +1,64 @@
-## Foundry
+# naym-coin
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+The `NAYM` ERC-20 token.
 
-Foundry consists of:
+## On-chain addresses
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+_(Live deployed addresses here)_
 
-## Documentation
+## Developer guide
 
-https://book.getfoundry.sh/
+Install pre-requisites:
 
-## Usage
+* [Foundry](https://book.getfoundry.sh/)
+* [Bun](https://bun.sh)
 
-### Build
+Then run:
 
 ```shell
-$ forge build
+$ bun i
 ```
 
-### Test
+To build the contracts:
 
 ```shell
-$ forge test
+$ bun build
 ```
 
-### Format
+To test:
 
 ```shell
-$ forge fmt
+$ bun test
 ```
 
-### Gas Snapshots
+To run a local devnet:
 
 ```shell
-$ forge snapshot
+$ bun devnet
 ```
 
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
+### Deployment
 
 ```shell
 $ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
 ```
 
-### Cast
+## License
 
-```shell
-$ cast <subcommand>
-```
+GPLv3 - see [LICENSE.md]
 
-### Help
+Naym-Coin smart contracts
+Copyright (C) 2024  [Nayms](https://nayms.com)
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
