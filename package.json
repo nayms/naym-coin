@@ -4,7 +4,7 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "prepare": "husky",
+    "prepare": "forge install && husky",
     "compile": "forge build",
     "tests": "forge test",
     "devnet": "anvil",
