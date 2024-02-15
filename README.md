@@ -2,9 +2,16 @@
 
 The `NAYM` ERC-20 token.
 
+Features:
+
+* Has an owner that can be changed (`0x0` not allowed).
+* Has changeable minter that is set by owner. Only the minter can mint new tokens.
+* Anyone can burn their own tokens.
+* Supports meta/relay transactions.
+
 ## On-chain addresses
 
-_(Live deployed addresses here)_
+_TODO: Live deployed addresses here_
 
 ## Developer guide
 
@@ -19,10 +26,10 @@ Then run:
 $ bun i
 ```
 
-To build the contracts:
+To compile the contracts:
 
 ```shell
-$ bun build
+$ bun compile
 ```
 
 To test:
@@ -39,9 +46,7 @@ $ bun devnet
 
 ### Deployment
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
+_TODO: deployment script_
 
 ## License
 

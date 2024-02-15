@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "prepare": "husky",
-    "build": "forge build",
+    "compile": "forge build",
     "tests": "forge test",
     "devnet": "anvil",
     "commitlint": "commitlint --edit"
