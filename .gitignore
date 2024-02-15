@@ -15,3 +15,6 @@ docs/
 
 # node/bun
 node_modules
+
+# Test
+lcov.info
