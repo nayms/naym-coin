@@ -5,6 +5,7 @@ import {Test, console} from "forge-std/Test.sol";
 import { Vm } from "forge-std/Vm.sol";
 
 import { NaymToken } from "../src/NaymToken.sol";
+import { IERC20Errors } from "openzeppelin/interfaces/draft-IERC6093.sol";
 import { Ownable } from "openzeppelin/access/Ownable.sol";
 
 contract NaymTokenTest is Test {
@@ -14,6 +15,7 @@ contract NaymTokenTest is Test {
     address owner2 = address(0x789);
     address minter1 = address(0x123);
     address minter2 = address(0x456);
+    address user1 = address(0x1234);
 
     function setUp() public {
         t = new NaymToken(owner1, minter1);
@@ -64,14 +66,30 @@ contract NaymTokenTest is Test {
 
     function test_Mint() public {
         // unauthorized
-        vm.prank(address(0x1234));
-        vm.expectRevert(abi.encodeWithSelector(NaymToken.UnauthorizedMinter.selector, address(0x1234)));
-        t.mint(address(0x1234), 100);
+        vm.prank(user1);
+        vm.expectRevert(abi.encodeWithSelector(NaymToken.UnauthorizedMinter.selector, user1));
+        t.mint(user1, 100);
 
         // authorized
         vm.prank(minter1);
-        t.mint(address(0x1234), 100);
+        t.mint(user1, 100);
         assertEq(t.totalSupply(), 100);
-        assertEq(t.balanceOf(address(0x1234)), 100);
+        assertEq(t.balanceOf(user1), 100);
+    }
+
+    function test_Burn() public {
+        vm.prank(minter1);
+        t.mint(user1, 100);
+
+        // burn more than balance
+        vm.prank(user1);
+        vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientBalance.selector, user1, 100, 101));
+        t.burn(101);
+
+        // burn less than balance
+        vm.prank(user1);
+        t.burn(50);
+        assertEq(t.totalSupply(), 50);
+        assertEq(t.balanceOf(user1), 50);
     }
 }
