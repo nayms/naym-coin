@@ -1,4 +1,5 @@
-![ci build](https://github.com/github/docs/actions/workflows/ci.yml/badge.svg?branch=master)
+![Build status](https://github.com/github/docs/actions/workflows/ci.yml/badge.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/nayms/naym-coin/badge.svg?t=wvNXqi)](https://coveralls.io/github/nayms/naym-coin)
 
 # naym-coin
 
