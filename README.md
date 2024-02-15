@@ -52,7 +52,7 @@ _TODO: deployment script_
 
 ## License
 
-GPLv3 - see [LICENSE.md]
+GPLv3 - see [LICENSE.md](LICENSE.md)
 
 Naym-Coin smart contracts
 Copyright (C) 2024  [Nayms](https://nayms.com)
