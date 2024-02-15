@@ -1,4 +1,4 @@
-![ci build](https://github.com/github/docs/actions/workflows/test.yml/badge.svg?branch=master)
+![ci build](https://github.com/github/docs/actions/workflows/ci.yml/badge.svg?branch=master)
 
 # naym-coin
 
