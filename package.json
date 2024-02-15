@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "prepare": "forge install && husky",
-    "compile": "forge build",
-    "tests": "forge test",
+    "build": "forge build",
+    "test": "forge test",
     "devnet": "anvil",
     "commitlint": "commitlint --edit"
   },

@@ -25,6 +25,11 @@ jobs:
         with:
           submodules: recursive
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "yarn"
+
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
@@ -33,21 +38,12 @@ jobs:
       - name: Install solc
         run: svm install 0.8.20 && svm use 0.8.20
 
-      - name: Install dependencies for bun
-        run: apt-get install -y unzip
-
-      - name: Install bun
-        uses: oven-sh/setup-bun@v1
-      
-      # - name: Install NPM dependencies
-      #   run: bun i
-
       - name: Compile
-        run: bun compile --sizes
+        run: yarn compile --sizes
         id: build
 
       - name: Run tests
-        run: bun test
+        run: yarn test
         id: test
 
 

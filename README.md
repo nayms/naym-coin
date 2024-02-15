@@ -20,30 +20,30 @@ _TODO: Live deployed addresses here_
 Install pre-requisites:
 
 * [Foundry](https://book.getfoundry.sh/)
-* [Bun](https://bun.sh)
+* [Yarn](https://yarnpkg.com/)
 
 Then run:
 
 ```shell
-$ bun i
+$ yarn
 ```
 
 To compile the contracts:
 
 ```shell
-$ bun compile
+$ yarn build
 ```
 
 To test:
 
 ```shell
-$ bun tests
+$ yarn test
 ```
 
 To run a local devnet:
 
 ```shell
-$ bun devnet
+$ yarn devnet
 ```
 
 ### Deployment
