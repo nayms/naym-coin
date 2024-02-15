@@ -1,3 +1,5 @@
+![ci build](https://github.com/github/docs/actions/workflows/test.yml/badge.svg?branch=master)
+
 # naym-coin
 
 The `NAYM` ERC-20 token.
