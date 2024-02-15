@@ -28,7 +28,7 @@ $ bun build
 To test:
 
 ```shell
-$ bun test
+$ bun tests
 ```
 
 To run a local devnet:

@@ -6,8 +6,9 @@
   "scripts": {
     "prepare": "husky",
     "build": "forge build",
-    "test": "forge test",
-    "devnet": "anvil"
+    "tests": "forge test",
+    "devnet": "anvil",
+    "commitlint": "commitlint --edit"
   },
   "commitlint": {
     "extends": [
@@ -15,6 +16,7 @@
     ]
   },
   "devDependencies": {
+    "@commitlint/cli": "^18.6.1",
     "@commitlint/config-conventional": "^18.6.2",
     "husky": "^9.0.11"
   }
