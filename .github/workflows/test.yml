@@ -34,7 +34,7 @@ jobs:
         run: svm install 0.8.20 && svm use 0.8.20
 
       - name: Install dependencies for bun
-        run: sudo apt-get install -y unzip
+        run: apt-get install -y unzip
 
       - name: Install bun
         uses: oven-sh/setup-bun@v1
