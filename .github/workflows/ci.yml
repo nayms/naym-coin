@@ -42,14 +42,12 @@ jobs:
         run: yarn build --sizes
         id: build
 
-      - name: Run tests
-        run: yarn test
+      - name: Run tests with coverage
+        run: yarn test-coverage
         id: test
 
-      - name: Coveralls
+      - name: Upload coverage report to Coveralls
         uses: coverallsapp/github-action@v2        
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: ./lcov.info
-          format: lcov
 
