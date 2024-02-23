@@ -10,7 +10,6 @@ Features:
 * Has an owner that can be changed (`0x0` not allowed).
 * Has changeable minter that is set by owner. Only the minter can mint new tokens.
 * Anyone can burn their own tokens.
-* Supports meta/relay transactions.
 
 ## On-chain addresses
 
@@ -57,13 +56,13 @@ $ yarn devnet
 To deploy locally, first run a local devnet:
 
 ```shell
-$ pnpm devnet
+$ yarn devnet
 ```
 
 Then run:
 
 ```shell
-$ pnpm deploy-local
+$ yarn deploy-local
 ```
 
 ### Public (tesnets, mainnets)
@@ -79,7 +78,7 @@ $ export CHAIN_ID="..."
 Then run:
 
 ```shell
-$ pnpm deploy-public
+$ yarn deploy-public
 ```
 
 ## License
