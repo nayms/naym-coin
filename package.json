@@ -9,7 +9,9 @@
     "test": "forge test",
     "test-coverage": "forge coverage --report lcov",
     "devnet": "anvil",
-    "commitlint": "commitlint --edit"
+    "commitlint": "commitlint --edit",
+    "deploy-local": "forge script scripts/Deploy.s.sol --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast",
+    "deploy-public": "forge script scripts/Deploy.s.sol --chain-id $CHAIN_ID --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast"
   },
   "commitlint": {
     "extends": [

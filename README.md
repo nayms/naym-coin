@@ -47,9 +47,40 @@ To run a local devnet:
 $ yarn devnet
 ```
 
-### Deployment
+## Deployment
 
-_TODO: deployment script_
+* _The `owner` and `minter` are both initially set to be the deployment wallet's address._
+* _[CREATE2](https://book.getfoundry.sh/tutorials/create2-tutorial) is used for deployment, so the address will always be the same as long as the deployment wallet and bytecode are the same, irrespective of chain, nonce, etc._
+
+### Local (anvil)
+
+To deploy locally, first run a local devnet:
+
+```shell
+$ pnpm devnet
+```
+
+Then run:
+
+```shell
+$ pnpm deploy-local
+```
+
+### Public (tesnets, mainnets)
+
+Set the following environment variables:
+
+```shell
+$ export PRIVATE_KEY="0x..."
+$ export RPC_URL="http://..."
+$ export CHAIN_ID="..."
+```
+
+Then run:
+
+```shell
+$ pnpm deploy-public
+```
 
 ## License
 
