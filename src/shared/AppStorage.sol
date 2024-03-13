@@ -20,19 +20,11 @@ struct AppStorage {
     uint256 totalSupply;
     mapping(bytes32 objectId => bool isInternalToken) internalToken;
     mapping(address account => uint256) balances;
-    //// Object ////
-    mapping(bytes32 objectId => bool isObject) existingObjects; // objectId => is an object?
-    mapping(bytes32 objectId => bytes32 objectsParent) objectParent; // objectId => parentId
-    mapping(bytes32 objectId => bytes32 objectsDataHash) objectDataHashes;
-    mapping(bytes32 objectId => string tokenSymbol) objectTokenSymbol;
-    mapping(bytes32 objectId => string tokenName) objectTokenName;
     //// ACL Configuration////
     mapping(bytes32 roleId => mapping(bytes32 groupId => bool isRoleInGroup)) groups; //role => (group => isRoleInGroup)
     mapping(bytes32 roleId => bytes32 assignerGroupId) canAssign; //role => Group that can assign/unassign that role
     //// User Data ////
     mapping(bytes32 objectId => mapping(bytes32 contextId => bytes32 roleId)) roles; // userId => (contextId => role)
-    address naymsToken; // represents the address key for this NAYMS token in AppStorage
-    bytes32 naymsTokenId; // represents the bytes32 key for this NAYMS token in AppStorage
     /// Simple two phase upgrade scheme
     mapping(bytes32 upgradeId => uint256 timestamp) upgradeScheduled; // id of the upgrade => the time that the upgrade
         // is valid until.
