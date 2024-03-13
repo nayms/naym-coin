@@ -5,7 +5,6 @@ import { IDiamondCut } from "lib/diamond-2-hardhat/contracts/interfaces/IDiamond
 import { Modifiers } from "../shared/Modifiers.sol";
 import { AppStorage, LibAppStorage } from "../shared/AppStorage.sol";
 import { LibGovernance } from "src/libs/LibGovernance.sol";
-import { LibConstants as LC } from "src/libs/LibConstants.sol";
 
 contract GovernanceFacet is Modifiers {
     event CreateUpgrade(bytes32 id, address indexed who);
@@ -48,7 +47,7 @@ contract GovernanceFacet is Modifiers {
      * @param id This is the keccak256(abi.encode(cut)), where cut is the array of FacetCut struct,
      * IDiamondCut.FacetCut[].
      */
-    function createUpgrade(bytes32 id) external assertPrivilege(LC.SYSTEM_IDENTIFIER_BYTES32, LC.GROUP_SYSTEM_ADMINS) {
+    function createUpgrade(bytes32 id) external onlySysAdmin {
         AppStorage storage s = LibAppStorage.diamondStorage();
 
         if (s.upgradeScheduled[id] > block.timestamp) {
@@ -69,10 +68,7 @@ contract GovernanceFacet is Modifiers {
      * called) + AppStorage.upgradeExpiration.
      * @param duration The duration until the upgrade expires.
      */
-    function updateUpgradeExpiration(uint256 duration)
-        external
-        assertPrivilege(LC.SYSTEM_IDENTIFIER_BYTES32, LC.GROUP_SYSTEM_ADMINS)
-    {
+    function updateUpgradeExpiration(uint256 duration) external onlySysAdmin {
         AppStorage storage s = LibAppStorage.diamondStorage();
 
         require(1 minutes < duration && duration < 1 weeks, "invalid upgrade expiration period");
@@ -87,7 +83,7 @@ contract GovernanceFacet is Modifiers {
      * @param id This is the keccak256(abi.encode(cut)), where cut is the array of FacetCut struct,
      * IDiamondCut.FacetCut[].
      */
-    function cancelUpgrade(bytes32 id) external assertPrivilege(LC.SYSTEM_IDENTIFIER_BYTES32, LC.GROUP_SYSTEM_ADMINS) {
+    function cancelUpgrade(bytes32 id) external onlySysAdmin {
         AppStorage storage s = LibAppStorage.diamondStorage();
 
         require(s.upgradeScheduled[id] > 0, "invalid upgrade ID");

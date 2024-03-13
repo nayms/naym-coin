@@ -122,13 +122,7 @@ contract NaymsTokenFacet is Modifiers {
      * @param _to The address to which the minted tokens will be sent.
      * @param _amount The amount of tokens to mint.
      */
-    function mint(
-        address _to,
-        uint256 _amount
-    )
-        external
-        assertPrivilege(LC.ROLE_MINTER._stringToBytes32(), LC.GROUP_MINTERS)
-    {
+    function mint(address _to, uint256 _amount) external onlyMinter {
         _mint(_to, _amount);
     }
 

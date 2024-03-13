@@ -1,30 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.24;
 
+import { AppStorage, LibAppStorage } from "../shared/AppStorage.sol";
 import { LibDiamond } from "lib/diamond-2-hardhat/contracts/libraries/LibDiamond.sol";
 import { IERC173 } from "lib/diamond-2-hardhat/contracts/interfaces/IERC173.sol";
-import { LibACL } from "src/libs/LibACL.sol";
-import { LibHelpers } from "src/libs/LibHelpers.sol";
-import { LibConstants as LC } from "src/libs/LibConstants.sol";
 import { Modifiers } from "src/shared/Modifiers.sol";
 
 contract NaymsOwnershipFacet is IERC173, Modifiers {
-    function transferOwnership(address _newOwner)
-        external
-        override
-        assertPrivilege(LC.SYSTEM_IDENTIFIER_BYTES32, LC.GROUP_SYSTEM_ADMINS)
-    {
-        bytes32 systemID = LibHelpers._stringToBytes32(LC.SYSTEM_IDENTIFIER);
-        bytes32 newAcc1Id = LibHelpers._getIdForAddress(_newOwner);
+    error NewSystemAdminCannotAlsoBeTheOwner();
 
-        require(
-            !LibACL._isInGroup(newAcc1Id, systemID, LibHelpers._stringToBytes32(LC.GROUP_SYSTEM_ADMINS)),
-            "NEW owner MUST NOT be sys admin"
-        );
-        require(
-            !LibACL._isInGroup(newAcc1Id, systemID, LibHelpers._stringToBytes32(LC.GROUP_SYSTEM_MANAGERS)),
-            "NEW owner MUST NOT be sys manager"
-        );
+    function transferOwnership(address _newOwner) external override onlySysAdmin {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        if (s.sysAdmins[_newOwner] == true) {
+            revert NewSystemAdminCannotAlsoBeTheOwner();
+        }
 
         LibDiamond.setContractOwner(_newOwner);
     }

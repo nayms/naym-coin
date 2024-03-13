@@ -20,16 +20,13 @@ struct AppStorage {
     uint256 totalSupply;
     mapping(bytes32 objectId => bool isInternalToken) internalToken;
     mapping(address account => uint256) balances;
-    //// ACL Configuration////
-    mapping(bytes32 roleId => mapping(bytes32 groupId => bool isRoleInGroup)) groups; //role => (group => isRoleInGroup)
-    mapping(bytes32 roleId => bytes32 assignerGroupId) canAssign; //role => Group that can assign/unassign that role
-    //// User Data ////
-    mapping(bytes32 objectId => mapping(bytes32 contextId => bytes32 roleId)) roles; // userId => (contextId => role)
     /// Simple two phase upgrade scheme
     mapping(bytes32 upgradeId => uint256 timestamp) upgradeScheduled; // id of the upgrade => the time that the upgrade
         // is valid until.
     uint256 upgradeExpiration; // the period of time that an upgrade is valid until.
-    uint256 sysAdmins; // counter for the number of sys admin accounts currently assigned
+    //// ROLES, ACL ////
+    mapping(address sysAdmin => bool isSysAdmin) sysAdmins;
+    address minter;
 }
 
 library LibAppStorage {
