@@ -1,21 +1,26 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import { LibNaymsToken } from "../libs/LibNaymsToken.sol";
 import { AppStorage, LibAppStorage } from "../shared/AppStorage.sol";
+import { Modifiers } from "../shared/Modifiers.sol";
+import { LibConstants as LC } from "src/libs/LibConstants.sol";
+import { LibHelpers } from "../libs/LibHelpers.sol";
+import { LibNaymsToken } from "../libs/LibNaymsToken.sol";
+
 /**
  * @title Nayms token facet.
  * @notice Use it to access and manipulate Nayms token.
  * @dev Use it to access and manipulate Nayms token.
  */
-
-contract NaymsTokenFacet {
+contract NaymsTokenFacet is Modifiers {
+    using LibHelpers for *;
     /**
      * @dev Indicates an error related to the current `balance` of a `sender`. Used in transfers.
      * @param sender Address whose tokens are being transferred.
      * @param balance Current balance for the interacting account.
      * @param needed Minimum amount required to perform a transfer.
      */
+
     error ERC20InsufficientBalance(address sender, uint256 balance, uint256 needed);
 
     /**
@@ -117,7 +122,13 @@ contract NaymsTokenFacet {
      * @param _to The address to which the minted tokens will be sent.
      * @param _amount The amount of tokens to mint.
      */
-    function mint(address _to, uint256 _amount) external /*onlyMinter*/ {
+    function mint(
+        address _to,
+        uint256 _amount
+    )
+        external
+        assertPrivilege(LC.ROLE_MINTER._stringToBytes32(), LC.GROUP_MINTERS)
+    {
         _mint(_to, _amount);
     }
 

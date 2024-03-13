@@ -4,7 +4,6 @@ pragma solidity 0.8.20;
 import { AppStorage, LibAppStorage } from "../shared/AppStorage.sol";
 import { LibDiamond } from "lib/diamond-2-hardhat/contracts/libraries/LibDiamond.sol";
 import { LibHelpers } from "./LibHelpers.sol";
-import { LibObject } from "./LibObject.sol";
 import { LibConstants as LC } from "./LibConstants.sol";
 
 library LibACL {
@@ -101,11 +100,6 @@ library LibACL {
         return false;
     }
 
-    function _isParentInGroup(bytes32 _objectId, bytes32 _contextId, bytes32 _groupId) internal view returns (bool) {
-        bytes32 parentId = LibObject._getParent(_objectId);
-        return _isInGroup(parentId, _contextId, _groupId);
-    }
-
     /**
      * @notice Checks if assigner has the authority to assign object to a role in given context
      * @dev Any object ID can be a context, system is a special context with highest priority
@@ -142,7 +136,6 @@ library LibACL {
     }
 
     function _hasGroupPrivilege(bytes32 _userId, bytes32 _contextId, bytes32 _groupId) internal view returns (bool) {
-        if (_isParentInGroup(_userId, _contextId, _groupId)) return true;
         if (_isInGroup(_userId, _contextId, _groupId)) return true;
         if (_isInGroup(_userId, LC.SYSTEM_IDENTIFIER_BYTES32, _groupId)) return true;
         return false;

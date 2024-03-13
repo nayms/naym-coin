@@ -52,6 +52,8 @@ library LibConstants {
     string internal constant ROLE_ENTITY_COMPTROLLER_CLAIM = "Comptroller Claim";
     string internal constant ROLE_ENTITY_COMPTROLLER_DIVIDEND = "Comptroller Dividend";
 
+    string internal constant ROLE_MINTER = "Minter";
+
     /// old roles
 
     string internal constant ROLE_SPONSOR = "Sponsor";
@@ -101,4 +103,5 @@ library LibConstants {
     string internal constant GROUP_SERVICE_PROVIDERS = "Service Providers";
     string internal constant GROUP_ONBOARDING_APPROVERS = "Onboarding Approvers";
     string internal constant GROUP_TOKEN_HOLDERS = "Token Holders";
+    string internal constant GROUP_MINTERS = "Minters";
 }
