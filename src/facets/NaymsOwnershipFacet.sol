@@ -5,7 +5,6 @@ import { LibDiamond } from "lib/diamond-2-hardhat/contracts/libraries/LibDiamond
 import { IERC173 } from "lib/diamond-2-hardhat/contracts/interfaces/IERC173.sol";
 import { LibACL } from "src/libs/LibACL.sol";
 import { LibHelpers } from "src/libs/LibHelpers.sol";
-import { LibAdmin } from "src/libs/LibAdmin.sol";
 import { LibConstants as LC } from "src/libs/LibConstants.sol";
 import { Modifiers } from "src/shared/Modifiers.sol";
 

@@ -27,8 +27,6 @@ struct AppStorage {
     mapping(bytes32 objectId => string tokenSymbol) objectTokenSymbol;
     mapping(bytes32 objectId => string tokenName) objectTokenName;
     mapping(bytes32 objectId => address tokenWrapperAddress) objectTokenWrapper;
-    mapping(bytes32 entityId => bool isEntity) existingEntities; // entityId => is an entity?
-    mapping(bytes32 policyId => bool isPolicy) existingSimplePolicies; // simplePolicyId => is a simple policy?
     //// ACL Configuration////
     mapping(bytes32 roleId => mapping(bytes32 groupId => bool isRoleInGroup)) groups; //role => (group => isRoleInGroup)
     mapping(bytes32 roleId => bytes32 assignerGroupId) canAssign; //role => Group that can assign/unassign that role
@@ -47,23 +45,11 @@ struct AppStorage {
         // to ensure symbol uniqueness
 }
 
-struct FunctionLockedStorage {
-    mapping(bytes4 => bool) locked; // function selector => is locked?
-}
-
 library LibAppStorage {
     bytes32 internal constant NAYMS_DIAMOND_STORAGE_POSITION = keccak256("diamond.standard.nayms.storage");
-    bytes32 internal constant FUNCTION_LOCK_STORAGE_POSITION = keccak256("diamond.function.lock.storage");
 
     function diamondStorage() internal pure returns (AppStorage storage ds) {
         bytes32 position = NAYMS_DIAMOND_STORAGE_POSITION;
-        assembly {
-            ds.slot := position
-        }
-    }
-
-    function functionLockStorage() internal pure returns (FunctionLockedStorage storage ds) {
-        bytes32 position = FUNCTION_LOCK_STORAGE_POSITION;
         assembly {
             ds.slot := position
         }
