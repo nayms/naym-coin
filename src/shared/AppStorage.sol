@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.20;
+pragma solidity 0.8.24;
 
 /// @notice storage for NAYM coin
 
@@ -26,7 +26,6 @@ struct AppStorage {
     mapping(bytes32 objectId => bytes32 objectsDataHash) objectDataHashes;
     mapping(bytes32 objectId => string tokenSymbol) objectTokenSymbol;
     mapping(bytes32 objectId => string tokenName) objectTokenName;
-    mapping(bytes32 objectId => address tokenWrapperAddress) objectTokenWrapper;
     //// ACL Configuration////
     mapping(bytes32 roleId => mapping(bytes32 groupId => bool isRoleInGroup)) groups; //role => (group => isRoleInGroup)
     mapping(bytes32 roleId => bytes32 assignerGroupId) canAssign; //role => Group that can assign/unassign that role

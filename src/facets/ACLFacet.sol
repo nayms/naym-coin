@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.20;
+pragma solidity 0.8.24;
 
 import { LibACL, LibHelpers } from "../libs/LibACL.sol";
 import { LibConstants as LC } from "../libs/LibConstants.sol";
@@ -62,26 +62,6 @@ contract ACLFacet is Modifiers {
      */
     function isInGroup(bytes32 _objectId, bytes32 _contextId, string memory _group) external view returns (bool) {
         return LibACL._isInGroup(_objectId, _contextId, LibHelpers._stringToBytes32(_group));
-    }
-
-    /**
-     * @notice Check whether a parent object belongs to the `_group` group in given context
-     * @dev Objects can have a parent object, i.e. entity is a parent of a user
-     * @param _objectId ID of an object whose parent is being checked for role group membership
-     * @param _contextId Context in which the role group membership is being checked
-     * @param _group name of the role group
-     * @return true if object's parent is a member of this role group, false otherwise
-     */
-    function isParentInGroup(
-        bytes32 _objectId,
-        bytes32 _contextId,
-        string memory _group
-    )
-        external
-        view
-        returns (bool)
-    {
-        return LibACL._isParentInGroup(_objectId, _contextId, LibHelpers._stringToBytes32(_group));
     }
 
     /**
