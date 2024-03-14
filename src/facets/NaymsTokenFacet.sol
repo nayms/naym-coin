@@ -79,6 +79,10 @@ contract NaymsTokenFacet is Modifiers {
         return LibNaymsToken._balanceOf(addr);
     }
 
+    function name() external pure returns (string memory) {
+        return "Naym";
+    }
+
     function symbol() external pure returns (string memory) {
         return "NAYM";
     }
@@ -255,5 +259,10 @@ contract NaymsTokenFacet is Modifiers {
                 _approve(owner, spender, currentAllowance - value, false);
             }
         }
+    }
+
+    function minter() external view returns (address) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        return s.minter;
     }
 }
