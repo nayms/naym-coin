@@ -30,22 +30,14 @@ jobs:
           node-version: 20
           cache: "yarn"
 
-      - name: Configure Git Safe Directory
-        run: git config --global --add safe.directory ${{ github.workspace }}
-
-      - name: Install NPM packages
-        run: yarn install
-
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: nightly
-
       - name: Install solc
         run: svm install 0.8.24 && svm use 0.8.24
 
       - name: Fix ownership
         run: git config --global --add safe.directory /__w/naym-coin/naym-coin
+
+      - name: Install NPM packages
+        run: yarn install
 
       - name: Compile
         run: yarn build --sizes
