@@ -30,6 +30,9 @@ jobs:
           node-version: 20
           cache: "yarn"
 
+      - name: Configure Git Safe Directory
+        run: git config --global --add safe.directory ${{ github.workspace }}
+
       - name: Install NPM packages
         run: yarn install
 
