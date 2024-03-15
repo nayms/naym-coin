@@ -26,6 +26,7 @@ struct AppStorage {
     uint256 upgradeExpiration; // the period of time that an upgrade is valid until.
     //// ROLES, ACL ////
     mapping(address sysAdmin => bool isSysAdmin) sysAdmins;
+    uint256 sysAdminsCount;
     address minter;
 }
 

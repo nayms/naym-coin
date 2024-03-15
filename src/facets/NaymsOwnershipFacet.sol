@@ -7,12 +7,12 @@ import { IERC173 } from "lib/diamond-2-hardhat/contracts/interfaces/IERC173.sol"
 import { Modifiers } from "src/shared/Modifiers.sol";
 
 contract NaymsOwnershipFacet is IERC173, Modifiers {
-    error NewSystemAdminCannotAlsoBeTheOwner();
+    error NewOwnerCannotAlsoBeSystemAdmin();
 
     function transferOwnership(address _newOwner) external override onlySysAdmin {
         AppStorage storage s = LibAppStorage.diamondStorage();
         if (s.sysAdmins[_newOwner] == true) {
-            revert NewSystemAdminCannotAlsoBeTheOwner();
+            revert NewOwnerCannotAlsoBeSystemAdmin();
         }
 
         LibDiamond.setContractOwner(_newOwner);

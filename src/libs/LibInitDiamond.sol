@@ -11,6 +11,7 @@ library LibInitDiamond {
         AppStorage storage s = LibAppStorage.diamondStorage();
 
         s.sysAdmins[_newSystemAdmin] = true;
+        s.sysAdminsCount += 1;
     }
 
     function setMinter(address _newMinter) internal {

@@ -17,4 +17,8 @@ contract ACLFacet is Modifiers {
     function setMinter(address _newMinter) external onlySysAdmin {
         LibACL._setMinter(_newMinter);
     }
+
+    function removeSysAdmin(address _removeSystemAdmin) external onlySysAdmin {
+        LibACL._removeSystemAdmin(_removeSystemAdmin);
+    }
 }

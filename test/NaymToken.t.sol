@@ -4,13 +4,14 @@ pragma solidity ^0.8.20;
 import { Test, console as c, Vm } from "forge-std/Test.sol";
 
 import { IERC20Errors } from "openzeppelin/interfaces/draft-IERC6093.sol";
-import { Ownable } from "openzeppelin/access/Ownable.sol";
+import { NaymsOwnershipFacet } from "src/facets/NaymsOwnershipFacet.sol";
 
 import { IDiamondCut } from "lib/diamond-2-hardhat/contracts/interfaces/IDiamondCut.sol";
 import { DiamondProxy } from "src/generated/DiamondProxy.sol";
 import { IDiamondProxy } from "src/generated/IDiamondProxy.sol";
 import { LibDiamondHelper } from "src/generated/LibDiamondHelper.sol";
 import { LibGovernance } from "src/libs/LibGovernance.sol";
+import { LibACL } from "src/libs/LibACL.sol";
 import { LibHelpers } from "src/libs/LibHelpers.sol";
 import { InitDiamond } from "src/init/InitDiamond.sol";
 import { NaymsTokenFacet } from "src/facets/NaymsTokenFacet.sol";
@@ -27,7 +28,7 @@ contract NaymTokenTest is Test {
     address minter2 = address(0x456);
     address user1 = address(0x1234);
 
-    address public naymsAddress;
+    address public tAddress;
 
     IDiamondProxy public t;
     InitDiamond public initDiamond;
@@ -41,44 +42,46 @@ contract NaymTokenTest is Test {
         c.log("block.chainid", block.chainid);
 
         bool BOOL_FORK_TEST = vm.envOr({ name: "BOOL_FORK_TEST", defaultValue: false });
+        tAddress = vm.envOr({ name: "DIAMOND_ADDRESS", defaultValue: address(0) });
+
         c.log("Are tests being run on a fork?".yellow().bold(), BOOL_FORK_TEST);
         bool TESTS_FORK_UPGRADE_DIAMOND = vm.envOr({ name: "TESTS_FORK_UPGRADE_DIAMOND", defaultValue: true });
         c.log("Are we testing diamond upgrades on a fork?".yellow().bold(), TESTS_FORK_UPGRADE_DIAMOND);
 
         if (BOOL_FORK_TEST) {
-            // uint256 FORK_BLOCK = vm.envOr({
-            //     name: string.concat("FORK_BLOCK_", vm.toString(block.chainid)),
-            //     defaultValue: type(uint256).max
-            // });
-            // c.log("FORK_BLOCK", FORK_BLOCK);
+            uint256 FORK_BLOCK = vm.envOr({
+                name: string.concat("FORK_BLOCK_", vm.toString(block.chainid)),
+                defaultValue: type(uint256).max
+            });
+            c.log("FORK_BLOCK", FORK_BLOCK);
 
-            // if (FORK_BLOCK == type(uint256).max) {
-            //     c.log(
-            //         "Using latest block for fork, consider pinning a block number to avoid overloading the RPC
-            // endpoint"
-            //     );
-            //     vm.createSelectFork(getChain(block.chainid).rpcUrl);
-            // } else {
-            //     vm.createSelectFork(getChain(block.chainid).rpcUrl, FORK_BLOCK);
-            // }
+            if (FORK_BLOCK == type(uint256).max) {
+                c.log(
+                    "Using latest block for fork, consider pinning a block number to avoid overloading the RPC endpoint"
+                );
+                vm.createSelectFork(getChain(block.chainid).rpcUrl);
+            } else {
+                vm.createSelectFork(getChain(block.chainid).rpcUrl, FORK_BLOCK);
+            }
+            // Get diamond address from env
+            tAddress = vm.envOr({ name: "DIAMOND_ADDRESS", defaultValue: address(0) });
 
-            // naymsAddress = getDiamondAddress();
-            // t = IDiamondProxy(naymsAddress);
+            t = IDiamondProxy(tAddress);
 
-            // deployer = address(this);
-            // owner = t.owner();
-            // vm.label(owner, "Owner");
-            // systemAdmin = vm.envOr({
-            //     name: string.concat("SYSTEM_ADMIN_", vm.toString(block.chainid)),
-            //     defaultValue: address(0xE6aD24478bf7E1C0db07f7063A4019C83b1e5929)
-            // });
-            // vm.label(systemAdmin, "System Admin");
+            deployer = address(this);
+            owner = t.owner();
+            vm.label(owner, "Owner");
+            systemAdmin = vm.envOr({
+                name: string.concat("SYSTEM_ADMIN_", vm.toString(block.chainid)),
+                defaultValue: address(0xE6aD24478bf7E1C0db07f7063A4019C83b1e5929)
+            });
+            vm.label(systemAdmin, "System Admin");
 
-            // vm.startPrank(owner);
-            // if (TESTS_FORK_UPGRADE_DIAMOND) {
-            //     IDiamondCut.FacetCut[] memory cut = LibDiamondHelper.deployFacetsAndGetCuts(naymsAddress);
-            //     scheduleAndUpgradeDiamond(cut);
-            // }
+            vm.startPrank(owner);
+            if (TESTS_FORK_UPGRADE_DIAMOND) {
+                IDiamondCut.FacetCut[] memory cut = LibDiamondHelper.deployFacetsAndGetCuts(tAddress);
+                scheduleAndUpgradeDiamond(cut);
+            }
         } else {
             c.log("Local testing (no fork)");
 
@@ -90,9 +93,9 @@ contract NaymTokenTest is Test {
             systemAdmin = makeAddr("System Admin 0");
 
             c.log("Deploy diamond");
-            naymsAddress = address(new DiamondProxy(owner));
-            vm.label(naymsAddress, "Nayms diamond");
-            t = IDiamondProxy(naymsAddress);
+            tAddress = address(new DiamondProxy(owner));
+            vm.label(tAddress, "NAYM diamond");
+            t = IDiamondProxy(tAddress);
 
             // deploy all facets
             IDiamondCut.FacetCut[] memory cuts = LibDiamondHelper.deployFacetsAndGetCuts(address(t));
@@ -110,20 +113,18 @@ contract NaymTokenTest is Test {
         vm.stopPrank();
     }
 
-    function test_diamond() public {
-        t.name();
-    }
-
     function test_Init() public {
         assertEq(t.name(), "Naym");
         assertEq(t.symbol(), "NAYM");
         assertEq(t.decimals(), 18);
         assertEq(t.totalSupply(), 0);
-        assertEq(t.owner(), owner1);
-        assertEq(t.minter(), minter1);
+        assertEq(t.owner(), address(this));
+        assertEq(t.minter(), systemAdmin);
     }
 
     function test_ChangeOwner() public {
+        assertEq(address(this), t.owner());
+
         // pass
         vm.prank(systemAdmin);
         t.transferOwnership(owner2);
@@ -131,28 +132,32 @@ contract NaymTokenTest is Test {
 
         // not owner
         vm.prank(systemAdmin);
-        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, systemAdmin));
+        vm.expectRevert(abi.encodeWithSelector(NaymsOwnershipFacet.NewOwnerCannotAlsoBeSystemAdmin.selector));
         t.transferOwnership(systemAdmin);
+    }
 
-        // invalid new owner
-        vm.prank(owner2);
-        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableInvalidOwner.selector, address(0)));
-        t.transferOwnership(address(0));
+    function test_ChangeSystemAdmin() public {
+        vm.startPrank(systemAdmin);
+        vm.expectRevert(abi.encodeWithSelector(LibACL.MustHaveAtLeastOneSystemAdmin.selector));
+        t.removeSysAdmin(systemAdmin);
+
+        t.setSystemAdmin(owner1);
+        t.removeSysAdmin(systemAdmin);
     }
 
     function test_SetMinter() public {
         // unauthorized
         vm.prank(address(0x1234));
-        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, address(0x1234)));
+        vm.expectRevert(abi.encodeWithSelector(Modifiers.NotSystemAdmin.selector, address(0x1234)));
         t.setMinter(minter2);
 
         // authorized
-        vm.prank(owner1);
+        vm.prank(systemAdmin);
         t.setMinter(minter2);
         assertEq(t.minter(), minter2);
 
         // can set to null address
-        vm.prank(owner1);
+        vm.prank(systemAdmin);
         t.setMinter(address(0));
         assertEq(t.minter(), address(0));
     }
@@ -163,6 +168,9 @@ contract NaymTokenTest is Test {
         vm.expectRevert(abi.encodeWithSelector(Modifiers.UnauthorizedMinter.selector, user1));
         t.mint(user1, 100);
 
+        vm.prank(systemAdmin);
+        t.setMinter(minter1);
+
         // authorized
         vm.prank(minter1);
         t.mint(user1, 100);
@@ -171,6 +179,9 @@ contract NaymTokenTest is Test {
     }
 
     function test_Burn() public {
+        vm.prank(systemAdmin);
+        t.setMinter(minter1);
+
         vm.prank(minter1);
         t.mint(user1, 100);
 
