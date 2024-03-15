@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPLv3
-pragma solidity ^0.8.20;
+pragma solidity 0.8.24;
 
 import { Test, console as c, Vm } from "forge-std/Test.sol";
 
@@ -12,12 +12,9 @@ import { IDiamondProxy } from "src/generated/IDiamondProxy.sol";
 import { LibDiamondHelper } from "src/generated/LibDiamondHelper.sol";
 import { LibGovernance } from "src/libs/LibGovernance.sol";
 import { LibACL } from "src/libs/LibACL.sol";
-import { LibHelpers } from "src/libs/LibHelpers.sol";
 import { InitDiamond } from "src/init/InitDiamond.sol";
-import { NaymsTokenFacet } from "src/facets/NaymsTokenFacet.sol";
 import { Modifiers } from "src/shared/Modifiers.sol";
 import { StdStyle } from "forge-std/StdStyle.sol";
-import { LibConstants as LC } from "src/libs/LibConstants.sol";
 
 contract NaymTokenTest is Test {
     using StdStyle for *;

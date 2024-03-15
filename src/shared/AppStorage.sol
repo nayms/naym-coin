@@ -3,24 +3,14 @@ pragma solidity 0.8.24;
 
 /// @notice storage for NAYM coin
 
-// solhint-disable no-global-import
-import "./FreeStructs.sol";
-
 struct AppStorage {
-    // Has this diamond been initialized?
+    //// Has this diamond been initialized? ////
     bool diamondInitialized;
-    //// EIP712 domain separator ////
-    uint256 initialChainId;
-    bytes32 initialDomainSeparator;
-    //// Reentrancy guard ////
-    uint256 reentrancyStatus;
     //// NAYMS ERC20 TOKEN ////
-    string name;
     mapping(address account => mapping(address spender => uint256)) allowance;
     uint256 totalSupply;
-    mapping(bytes32 objectId => bool isInternalToken) internalToken;
     mapping(address account => uint256) balances;
-    /// Simple two phase upgrade scheme
+    //// Simple two phase upgrade scheme ////
     mapping(bytes32 upgradeId => uint256 timestamp) upgradeScheduled; // id of the upgrade => the time that the upgrade
         // is valid until.
     uint256 upgradeExpiration; // the period of time that an upgrade is valid until.
@@ -31,10 +21,10 @@ struct AppStorage {
 }
 
 library LibAppStorage {
-    bytes32 internal constant NAYMS_DIAMOND_STORAGE_POSITION = keccak256("diamond.standard.nayms.storage");
+    bytes32 internal constant NAYM_DIAMOND_STORAGE_POSITION = keccak256("diamond.standard.naym.storage");
 
     function diamondStorage() internal pure returns (AppStorage storage ds) {
-        bytes32 position = NAYMS_DIAMOND_STORAGE_POSITION;
+        bytes32 position = NAYM_DIAMOND_STORAGE_POSITION;
         assembly {
             ds.slot := position
         }

@@ -3,7 +3,6 @@ pragma solidity 0.8.24;
 
 import { AppStorage, LibAppStorage } from "../shared/AppStorage.sol";
 import { Modifiers } from "../shared/Modifiers.sol";
-import { LibConstants as LC } from "src/libs/LibConstants.sol";
 import { LibHelpers } from "../libs/LibHelpers.sol";
 import { LibNaymsToken } from "../libs/LibNaymsToken.sol";
 
@@ -92,18 +91,7 @@ contract NaymsTokenFacet is Modifiers {
     }
 
     function approve(address spender, uint256 amount) external returns (bool) {
-        AppStorage storage s = LibAppStorage.diamondStorage();
-
-        if (msg.sender == address(0)) {
-            revert ERC20InvalidApprover(address(0));
-        }
-        if (spender == address(0)) {
-            revert ERC20InvalidSpender(address(0));
-        }
-
-        s.allowance[msg.sender][spender] = amount;
-
-        emit Approval(msg.sender, spender, amount);
+        _approve(msg.sender, spender, amount, true);
 
         return true;
     }
@@ -266,6 +254,9 @@ contract NaymsTokenFacet is Modifiers {
         }
     }
 
+    /**
+     * @dev Returns the address who has permissions to mint.
+     */
     function minter() external view returns (address) {
         AppStorage storage s = LibAppStorage.diamondStorage();
         return s.minter;
