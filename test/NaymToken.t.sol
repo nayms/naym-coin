@@ -28,6 +28,10 @@ contract NaymTokenTest is Test {
     address minter2 = address(0x456);
     address user1 = address(0x1234);
 
+    address constant SPENDER = address(11);
+    address constant SENDER = address(22);
+    address constant RECEIVER = address(33);
+
     address public tAddress;
 
     IDiamondProxy public t;
@@ -195,6 +199,26 @@ contract NaymTokenTest is Test {
         t.burn(50);
         assertEq(t.totalSupply(), 50);
         assertEq(t.balanceOf(user1), 50);
+    }
+
+    function test_TransferFrom() public {
+        vm.prank(systemAdmin);
+        t.setMinter(minter1);
+
+        vm.prank(minter1);
+        t.mint(SENDER, 100);
+
+        // approve
+        vm.prank(SENDER);
+        t.approve(SPENDER, 100);
+        assertEq(t.allowance(SENDER, SPENDER), 100);
+
+        // transferFrom
+        vm.prank(SPENDER);
+        t.transferFrom(SENDER, RECEIVER, 50);
+        assertEq(t.balanceOf(SENDER), 50);
+        assertEq(t.balanceOf(RECEIVER), 50);
+        assertEq(t.allowance(SENDER, SPENDER), 50);
     }
 
     function scheduleAndUpgradeDiamond(

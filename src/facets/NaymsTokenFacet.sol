@@ -108,6 +108,11 @@ contract NaymsTokenFacet is Modifiers {
         return true;
     }
 
+    function allowance(address owner, address spender) external view returns (uint256) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        return s.allowance[owner][spender];
+    }
+
     function transfer(address to, uint256 amount) external returns (bool) {
         _transfer(msg.sender, to, amount);
 
