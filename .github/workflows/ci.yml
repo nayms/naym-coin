@@ -40,7 +40,7 @@ jobs:
         run: yarn install
 
       - name: Compile
-        run: yarn build --sizes
+        run: yarn build
         id: build
 
       - name: Run tests with coverage
