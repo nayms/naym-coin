@@ -30,11 +30,14 @@ jobs:
           node-version: 20
           cache: "yarn"
 
+      - name: Install NPM packages
+        run: yarn install
+
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
-      
+
       - name: Install solc
         run: svm install 0.8.20 && svm use 0.8.20
 
@@ -47,7 +50,6 @@ jobs:
         id: test
 
       - name: Upload coverage report to Coveralls
-        uses: coverallsapp/github-action@v2        
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-
