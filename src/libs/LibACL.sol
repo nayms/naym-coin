@@ -8,11 +8,17 @@ library LibACL {
     error OwnerCannotBeSystemAdmin();
     error MustHaveAtLeastOneSystemAdmin();
 
+    event SysAdminAdded(address sysAdminAddress);
+    event SysAdminRemoved(address sysAdminAddress);
+    event MinterSet(address minterAddress);
+
     function _setSystemAdmin(address _newSystemAdmin) internal {
         AppStorage storage s = LibAppStorage.diamondStorage();
 
         s.sysAdmins[_newSystemAdmin] = true;
         s.sysAdminsCount += 1;
+
+        emit SysAdminAdded(_newSystemAdmin);
     }
 
     function _removeSystemAdmin(address _systemAdmin) internal {
@@ -24,6 +30,8 @@ library LibACL {
             }
             s.sysAdmins[_systemAdmin] = false;
             s.sysAdminsCount -= 1;
+
+            emit SysAdminRemoved(_systemAdmin);
         }
     }
 
@@ -31,5 +39,7 @@ library LibACL {
         AppStorage storage s = LibAppStorage.diamondStorage();
 
         s.minter = _newMinter;
+
+        emit MinterSet(_newMinter);
     }
 }
