@@ -149,6 +149,12 @@ contract NaymTokenTest is Test {
         t.removeSysAdmin(systemAdmin);
     }
 
+    function test_ReassignSystemAdmin() public {
+        vm.startPrank(systemAdmin);
+        vm.expectRevert(abi.encodeWithSelector(LibACL.CannotReassignExistingSystemAdmin.selector, systemAdmin));
+        t.setSystemAdmin(systemAdmin);
+    }
+
     function test_SetMinter() public {
         // unauthorized
         vm.prank(address(0x1234));
