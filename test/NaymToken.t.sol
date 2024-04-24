@@ -145,8 +145,13 @@ contract NaymTokenTest is Test {
         vm.expectRevert(abi.encodeWithSelector(LibACL.MustHaveAtLeastOneSystemAdmin.selector));
         t.removeSysAdmin(systemAdmin);
 
+        vm.recordLogs();
         t.setSystemAdmin(owner1);
+        assertEventAddress("SysAdminAdded(address)", owner1);
+
+        vm.recordLogs();
         t.removeSysAdmin(systemAdmin);
+        assertEventAddress("SysAdminRemoved(address)", systemAdmin);
     }
 
     function test_SetMinter() public {
@@ -156,9 +161,13 @@ contract NaymTokenTest is Test {
         t.setMinter(minter2);
 
         // authorized
+        vm.recordLogs();
+
         vm.prank(systemAdmin);
         t.setMinter(minter2);
         assertEq(t.minter(), minter2);
+
+        assertEventAddress("MinterSet(address)", minter2);
 
         // can set to null address
         vm.prank(systemAdmin);
@@ -244,5 +253,14 @@ contract NaymTokenTest is Test {
 
     function scheduleAndUpgradeDiamond(IDiamondCut.FacetCut[] memory _cut) internal {
         scheduleAndUpgradeDiamond(_cut, address(0), "");
+    }
+
+    function assertEventAddress(string memory eventDescriptor, address eventAddress) private {
+        Vm.Log[] memory entries = vm.getRecordedLogs();
+        Vm.Log memory entry = entries[entries.length - 1];
+        assertEq(entry.topics.length, 1);
+        assertEq(entry.topics[0], keccak256(bytes(eventDescriptor)));
+        address a = abi.decode(entry.data, (address));
+        assertEq(a, eventAddress, "invalid event address");
     }
 }
