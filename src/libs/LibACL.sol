@@ -4,9 +4,9 @@ pragma solidity 0.8.24;
 import { AppStorage, LibAppStorage } from "../shared/AppStorage.sol";
 
 library LibACL {
-    /// @dev The Nayms Diamond (proxy contract) owner (address) must be mutually exclusive with the system admin role.
-    error OwnerCannotBeSystemAdmin();
+
     error MustHaveAtLeastOneSystemAdmin();
+    error CannotReassignExistingSystemAdmin(address newSystemAdmin);
 
     event SysAdminAdded(address sysAdminAddress);
     event SysAdminRemoved(address sysAdminAddress);
@@ -14,6 +14,10 @@ library LibACL {
 
     function _setSystemAdmin(address _newSystemAdmin) internal {
         AppStorage storage s = LibAppStorage.diamondStorage();
+
+        if (s.sysAdmins[_newSystemAdmin]) {
+            revert CannotReassignExistingSystemAdmin(_newSystemAdmin);
+        }
 
         s.sysAdmins[_newSystemAdmin] = true;
         s.sysAdminsCount += 1;
