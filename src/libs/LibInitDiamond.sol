@@ -2,9 +2,6 @@
 pragma solidity 0.8.24;
 
 import { AppStorage, LibAppStorage } from "../shared/AppStorage.sol";
-import { LibConstants as LC } from "./LibConstants.sol";
-import { LibHelpers } from "./LibHelpers.sol";
-import { LibACL } from "./LibACL.sol";
 
 library LibInitDiamond {
     function setSystemAdmin(address _newSystemAdmin) internal {

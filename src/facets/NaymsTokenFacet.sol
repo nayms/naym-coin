@@ -3,7 +3,6 @@ pragma solidity 0.8.24;
 
 import { AppStorage, LibAppStorage } from "../shared/AppStorage.sol";
 import { Modifiers } from "../shared/Modifiers.sol";
-import { LibConstants as LC } from "src/libs/LibConstants.sol";
 import { LibHelpers } from "../libs/LibHelpers.sol";
 import { LibNaymsToken } from "../libs/LibNaymsToken.sol";
 
