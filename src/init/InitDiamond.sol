@@ -16,7 +16,7 @@ contract InitDiamond {
         }
 
         LibInitDiamond.setSystemAdmin(_systemAdmin);
-        LibInitDiamond.setMinter(_systemAdmin); //todo
+        LibInitDiamond.setMinter(_systemAdmin);
         LibInitDiamond.setUpgradeExpiration();
     }
 }
