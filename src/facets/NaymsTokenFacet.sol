@@ -44,8 +44,6 @@ contract NaymsTokenFacet is Modifiers {
     }
 
     function approve(address spender, uint256 amount) external returns (bool) {
-        AppStorage storage s = LibAppStorage.diamondStorage();
-
         LibERC20Token._approve(msg.sender, spender, amount, true);
 
         return true;
