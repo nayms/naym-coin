@@ -1,89 +1,122 @@
 const path = require("path");
 const rootFolder = path.join(__dirname, "..", "..", "..");
 
-const fs = require("fs");
-const ethers = require("ethers");
+const { createPublicClient, createWalletClient, http, encodeFunctionData, keccak256 } = require("viem");
+const { mainnet, baseSepolia, base, sepolia } = require("viem/chains");
 const config = require(path.join(rootFolder, "gemforge.config.cjs"));
 const deployments = require(path.join(rootFolder, "gemforge.deployments.json"));
-const { abi } = require(path.join(
-  rootFolder,
-  "out/IDiamondProxy.sol/IDiamondProxy.json"
-));
+const { abi } = require(path.join(rootFolder, "out/IDiamondProxy.sol/IDiamondProxy.json"));
 
-const loadTarget = (exports.loadTarget = (targetId, walletIdAttr) => {
-  const networkId = config.targets[targetId].network;
-  const network = config.networks[networkId];
-  const walletId = config.targets[targetId][walletIdAttr || "wallet"];
-  const wallet = config.wallets[walletId];
+// Mapping of chain IDs to chain objects
+const chainMap = {
+    1: mainnet,
+    11155111: sepolia,
+    8453: base,
+    84532: baseSepolia,
+};
 
-  const provider = new ethers.providers.JsonRpcProvider(network.rpcUrl);
+const getChainFromRpcUrl = async (rpcUrl) => {
+    const client = createPublicClient({
+        transport: http(rpcUrl),
+    });
+    const chainId = await client.getChainId();
+    return chainMap[chainId];
+};
 
-  const signer =
-    wallet.type === "mnemonic"
-      ? ethers.Wallet.fromMnemonic(
-          wallet.config.words,
-          `m/44'/60'/0'/0/${wallet.config.index || 0}`
-        ).connect(provider)
-      : new ethers.Wallet(wallet.config.key).connect(provider);
+const loadTarget = (exports.loadTarget = async (targetId, walletIdAttr) => {
+    const networkId = config.targets[targetId].network;
+    const network = config.networks[networkId];
+    const walletId = config.targets[targetId][walletIdAttr || "wallet"];
+    const wallet = config.wallets[walletId];
 
-  const proxyAddress = getProxyAddress(targetId);
-  const contract = proxyAddress
-    ? new ethers.Contract(proxyAddress, abi, signer)
-    : null;
+    const chain = await getChainFromRpcUrl(network.rpcUrl);
 
-  return {
-    networkId,
-    network,
-    walletId,
-    wallet,
-    proxyAddress,
-    signer,
-    contract,
-  };
+    const client = createPublicClient({
+        chain,
+        transport: http(network.rpcUrl),
+    });
+
+    const walletClient =
+        wallet.type === "mnemonic"
+            ? createWalletClient({
+                  mnemonic: wallet.config.words,
+                  path: `m/44'/60'/0'/0/${wallet.config.index || 0}`,
+                  transport: http(network.rpcUrl),
+              })
+            : createWalletClient({
+                  privateKey: wallet.config.key,
+                  transport: http(network.rpcUrl),
+              });
+
+    const proxyAddress = getProxyAddress(targetId);
+    const contract = proxyAddress ? { address: proxyAddress, abi, client: walletClient } : null;
+
+    return {
+        networkId,
+        network,
+        walletId,
+        wallet,
+        proxyAddress,
+        client,
+        contract,
+    };
 });
 
 const getProxyAddress = (exports.getProxyAddress = (targetId) => {
-  return deployments[targetId]?.contracts.find((a) => a.name === "DiamondProxy")
-    ?.onChain.address;
+    return deployments[targetId]?.contracts.find((a) => a.name === "DiamondProxy")?.onChain.address;
 });
 
 exports.calculateUpgradeId = async (cutFile) => {
-  const cutData = require(cutFile);
-  const encodedData = ethers.utils.defaultAbiCoder.encode(
-    [
-      "tuple(address facetAddress, uint8 action, bytes4[] functionSelectors)[]",
-      "address",
-      "bytes",
-    ],
-    [cutData.cuts, cutData.initContractAddress, cutData.initData]
-  );
-  return ethers.utils.keccak256(encodedData);
+    const cutData = require(cutFile);
+    const encodedData = encodeFunctionData({
+        abi: [
+            {
+                type: "function",
+                name: "calculateUpgradeId",
+                inputs: [
+                    { type: "tuple(address facetAddress, uint8 action, bytes4[] functionSelectors)[]", name: "cuts" },
+                    { type: "address", name: "initContractAddress" },
+                    { type: "bytes", name: "initData" },
+                ],
+            },
+        ],
+        functionName: "calculateUpgradeId",
+        args: [cutData.cuts, cutData.initContractAddress, cutData.initData],
+    });
+    return keccak256(encodedData);
 };
 
 exports.enableUpgradeViaGovernance = async (targetId, cutFile) => {
-  if (
-    deployments[targetId].chaiId === 1 ||
-    deployments[targetId].chaiId === 8453
-  ) {
-    throw new Error("Only testnet upgrades can be automated!");
-  }
+    if (deployments[targetId].chaiId === 1 || deployments[targetId].chaiId === 8453) {
+        throw new Error("Only testnet upgrades can be automated!");
+    }
 
-  const { contract } = loadTarget(targetId, "governance");
+    const { contract } = await loadTarget(targetId, "governance");
 
-  const upgradeId = await exports.calculateUpgradeId(cutFile);
-  console.log(`Enabling upgrade in contract, upgrade id: ${upgradeId}`);
+    const upgradeId = await exports.calculateUpgradeId(cutFile);
+    console.log(`Enabling upgrade in contract, upgrade id: ${upgradeId}`);
 
-  const tx = await contract.createUpgrade(upgradeId);
-  console.log(`Transaction hash: ${tx.hash}`);
+    const tx = await contract.client.writeContract({
+        address: contract.address,
+        abi: contract.abi,
+        functionName: "createUpgrade",
+        args: [upgradeId],
+    });
+    console.log(`Transaction hash: ${tx.hash}`);
 
-  await tx.wait();
-  console.log("Transaction mined!");
+    await tx.wait();
+    console.log("Transaction mined!");
 };
 
 exports.assertUpgradeIdIsEnabled = async (targetId, upgradeId) => {
-  const { contract } = loadTarget(targetId);
-  const val = await contract.getUpgrade(upgradeId);
-  if (!val) {
-    throw new Error(`Upgrade not found!`);
-  }
+    const { contract } = await loadTarget(targetId);
+    const val = await contract.client.readContract({
+        address: contract.address,
+        abi: contract.abi,
+        functionName: "getUpgrade",
+        args: [upgradeId],
+    });
+    if (!val) {
+        throw new Error(`Upgrade not found!`);
+    }
 };
