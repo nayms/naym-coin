@@ -1,142 +1,177 @@
-/**
- * GemForge configuration file.
- * 
- * For detailed instructions please see the documentation at https://gemforge.xyz/configuration/
- */
+require("dotenv").config();
+
+const fs = require("fs");
+const { mnemonicToAccount } = require("viem/accounts");
+
+const MNEMONIC = fs.existsSync("./nayms_mnemonic.txt") ? fs.readFileSync("./nayms_mnemonic.txt").toString().trim() : "test test test test test test test test test test test junk";
+
+const sysAdminAddress = mnemonicToAccount(MNEMONIC).address;
+
+console.log("The sysAdminAddress is", sysAdminAddress);
+
 module.exports = {
   // Configuration file version
   version: 2,
   // Compiler configuration
   solc: {
     // SPDX License - to be inserted in all generated .sol files
-    license: 'MIT',
+    license: "MIT",
     // Solidity compiler version - to be inserted in all generated .sol files
-    version: '0.8.21',
+    version: "0.8.20",
   },
   // commands to execute
   commands: {
     // the build command
-    build: 'forge build',
+    build: "forge build",
   },
   paths: {
     // contract built artifacts folder
-    artifacts: 'out',
+    artifacts: "out",
     // source files
     src: {
       // file patterns to include in facet parsing
       facets: [
         // include all .sol files in the facets directory ending "Facet"
-        'src/facets/*Facet.sol'
+        "src/facets/*Facet.sol",
       ],
     },
     // folders for gemforge-generated files
     generated: {
       // output folder for generated .sol files
-      solidity: 'src/generated', 
+      solidity: "src/generated",
       // output folder for support scripts and files
-      support: '.gemforge',
+      support: ".gemforge",
       // deployments JSON file
-      deployments: 'gemforge.deployments.json',
+      deployments: "gemforge.deployments.json",
     },
     // library source code
     lib: {
       // diamond library
-      diamond: 'lib/diamond-2-hardhat',
-    }
+      diamond: "lib/diamond-2-hardhat",
+    },
   },
   // artifacts configuration
   artifacts: {
     // artifact format - "foundry" or "hardhat"
-    format: 'foundry',
+    format: "foundry",
   },
   // generator options
   generator: {
     // proxy interface options
     proxyInterface: {
       // imports to include in the generated IDiamondProxy interface
-      imports: [],
+      imports: ["src/shared/FreeStructs.sol"],
     },
   },
   // diamond configuration
   diamond: {
     // Whether to include public methods when generating the IDiamondProxy interface. Default is to only include external methods.
     publicMethods: false,
-    // Names of core facet contracts - these will not be modified/removed once deployed.
-    // This default list is based on the diamond-2-hardhat library.
+    init: {
+      contract: "InitDiamond",
+      function: "init",
+    },
+    // Names of core facet contracts - these will not be modified/removed once deployed and are also reserved names.
+    // This default list is taken from the diamond-2-hardhat library.
     // NOTE: WE RECOMMEND NOT CHANGING ANY OF THESE EXISTING NAMES UNLESS YOU KNOW WHAT YOU ARE DOING.
-    coreFacets: [
-      'OwnershipFacet',
-      'DiamondCutFacet',
-      'DiamondLoupeFacet',
-    ],
+    coreFacets: ["DiamondCutFacet", "DiamondLoupeFacet", "NaymsOwnershipFacet", "ACLFacet", "GovernanceFacet"],
   },
-  // lifecycle hooks
+  // lifecycle shell command hooks
   hooks: {
-    // shell command to execute before build
-    preBuild: '',
-    // shell command to execute after build
-    postBuild: '',
-    // shell command to execute before deploy
-    preDeploy: '',
-    // shell command to execute after deploy
-    postDeploy: '',
+    preBuild: "",
+    postBuild: "",
+    preDeploy: "",
+    postDeploy: "./script/gemforge/verify.js",
   },
   // Wallets to use for deployment
   wallets: {
-    // Wallet named "wallet1"
-    wallet1: {
-      // Wallet type - mnemonic
-      type: 'mnemonic',
-      // Wallet config
+    // nayms owner
+    devOwnerWallet: {
+      type: "mnemonic",
       config: {
-        // Mnemonic phrase
-        words: 'test test test test test test test test test test test junk',
-        // 0-based index of the account to use
-        index: 0,
-      }
+        words: MNEMONIC,
+        index: 19,
+      },
     },
-    wallet2: {
-      // Wallet type - mnemonic
-      type: 'mnemonic',
-      // Wallet config
+    // nayms sys admin
+    devSysAdminWallet: {
+      type: "mnemonic",
       config: {
-        // Mnemonic phrase
-        words: () => process.env.MNEMONIC,
-        // 0-based index of the account to use
+        words: MNEMONIC,
+        index: 0,
+      },
+    },
+    wallet3: {
+      type: "mnemonic",
+      config: {
+        words: MNEMONIC,
         index: 0,
       },
     },
   },
-  // Networks/chains
   networks: {
-    // Local network
-    local: {
-      // RPC endpoint URL
-      rpcUrl: 'http://localhost:8545',
+    local: { rpcUrl: "http://localhost:8545" },
+    sepolia: { rpcUrl: process.env.ETH_SEPOLIA_RPC_URL },
+    mainnet: { rpcUrl: process.env.ETH_MAINNET_RPC_URL },
+    baseSepolia: {
+      rpcUrl: process.env.BASE_SEPOLIA_RPC_URL,
+      verifiers: [
+        {
+          verifierName: "etherscan",
+          verifierUrl: "https://api-sepolia.basescan.org/api",
+          verifierApiKey: process.env.BASESCAN_API_KEY,
+        },
+        {
+          verifierName: "blockscout", // needed for louper
+          verifierUrl: "https://base-sepolia.blockscout.com/api",
+          verifierApiKey: process.env.BLOCKSCOUT_API_KEY,
+        },
+      ],
     },
-    // Sepolia test network
-    sepolia: {
-      // RPC endpoint URL
-      rpcUrl: () => process.env.SEPOLIA_RPC_URL,
-    }
+    base: {
+      rpcUrl: process.env.BASE_MAINNET_RPC_URL,
+      verifiers: [
+        {
+          verifierName: "etherscan",
+          verifierUrl: "https://api.basescan.org/api",
+          verifierApiKey: process.env.BASESCAN_API_KEY,
+        },
+      ],
+    },
+    aurora: {
+      rpcUrl: process.env.AURORA_MAINNET_RPC_URL,
+      verifiers: [
+        {
+          verifierName: "aurora",
+          verifierUrl: "https://explorer.mainnet.aurora.dev/api",
+          verifierApiKey: process.env.BLOCKSCOUT_API_KEY,
+        },
+      ],
+    },
+    auroraTestnet: {
+      rpcUrl: process.env.AURORA_TESTNET_RPC_URL,
+      verifiers: [
+        {
+          verifierName: "aurora",
+          verifierUrl: "https://explorer.testnet.aurora.dev/api",
+          verifierApiKey: process.env.BLOCKSCOUT_API_KEY,
+        },
+      ],
+    },
   },
-  // Targets to deploy
   targets: {
-    local: {
-      // Network to deploy to
-      network: 'local',
-      // Wallet to use for deployment
-      wallet: 'wallet1',
-      // Initialization function arguments
-      initArgs: [],
-    },
-    testnet: {
-      // Network to deploy to
-      network: 'sepolia',
-      // Wallet to use for deployment
-      wallet: 'wallet2',
-      // Initialization function arguments
-      initArgs: [],
-    }
-  }
-}
+    local: { network: "local", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
+    sepolia: { network: "sepolia", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
+    sepoliaFork: { network: "local", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
+    mainnet: { network: "mainnet", wallet: "wallet3", initArgs: [sysAdminAddress] },
+    mainnetFork: { network: "local", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [] },
+    baseSepolia: { network: "baseSepolia", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
+    baseSepoliaFork: { network: "local", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
+    base: { network: "base", wallet: "wallet3", initArgs: [sysAdminAddress] },
+    baseFork: { network: "local", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [] },
+    aurora: { network: "aurora", wallet: "devOwnerWallet", initArgs: [sysAdminAddress] },
+    auroraFork: { network: "local", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [] },
+    auroraTestnet: { network: "auroraTestnet", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
+    auroraTestnetFork: { network: "local", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
+  },
+};

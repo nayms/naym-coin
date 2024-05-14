@@ -1,0 +1,156 @@
+{
+  "local": {
+    "chainId": 31337,
+    "contracts": [
+      {
+        "name": "DiamondProxy",
+        "fullyQualifiedName": "DiamondProxy.sol:DiamondProxy",
+        "sender": "0x931c3aC09202650148Edb2316e97815f904CF4fa",
+        "txHash": "0xc245b8a3be944e79a3c05c300bba97d593108e3e4028443c229dbc6d275683b9",
+        "onChain": {
+          "address": "0xE8737e94DcaA61B3354644D3a7177d91Abb7fBC0",
+          "constructorArgs": [
+            "0x931c3aC09202650148Edb2316e97815f904CF4fa"
+          ]
+        }
+      },
+      {
+        "name": "ACLFacet",
+        "fullyQualifiedName": "ACLFacet.sol:ACLFacet",
+        "sender": "0x931c3aC09202650148Edb2316e97815f904CF4fa",
+        "txHash": "0x288abf825cabb4a254d67f31d18fe6e8e9941a42a7bc1ab5ef0767245b5403de",
+        "onChain": {
+          "address": "0xC09f543dD405347105146BfD5b799233c69A7C70",
+          "constructorArgs": []
+        }
+      },
+      {
+        "name": "GovernanceFacet",
+        "fullyQualifiedName": "GovernanceFacet.sol:GovernanceFacet",
+        "sender": "0x931c3aC09202650148Edb2316e97815f904CF4fa",
+        "txHash": "0x19af62763c45d454d9cdb64de422ccd639f608fe6f91a4a1b2f86eab1215811d",
+        "onChain": {
+          "address": "0x0c6815cEB188B0d877B08CF4B1F850Ed0F0929F0",
+          "constructorArgs": []
+        }
+      },
+      {
+        "name": "NaymsOwnershipFacet",
+        "fullyQualifiedName": "NaymsOwnershipFacet.sol:NaymsOwnershipFacet",
+        "sender": "0x931c3aC09202650148Edb2316e97815f904CF4fa",
+        "txHash": "0x17841abee17390a7943863c53ebd18962449040a35781e9553dd3cf389e6e680",
+        "onChain": {
+          "address": "0xfc12A71BF96d541F439C79E3F16654e1c9B97935",
+          "constructorArgs": []
+        }
+      },
+      {
+        "name": "NaymsTokenFacet",
+        "fullyQualifiedName": "NaymsTokenFacet.sol:NaymsTokenFacet",
+        "sender": "0x931c3aC09202650148Edb2316e97815f904CF4fa",
+        "txHash": "0x26698c69f9c684cc903bb15fd475e00b799d4863265a3e10077d6f3a41030157",
+        "onChain": {
+          "address": "0x002d2970F2AacFD2344d2C1cc35b3985A374A73C",
+          "constructorArgs": []
+        }
+      },
+      {
+        "name": "PhasedDiamondCutFacet",
+        "fullyQualifiedName": "PhasedDiamondCutFacet.sol:PhasedDiamondCutFacet",
+        "sender": "0x931c3aC09202650148Edb2316e97815f904CF4fa",
+        "txHash": "0x2bbff59f8b8c76a95544fb95fdb95a384716fcacb4a04bd0ac55f188cb00276c",
+        "onChain": {
+          "address": "0x23c9080C0A5236C6E6297fB1f4184C9f200a1A80",
+          "constructorArgs": []
+        }
+      },
+      {
+        "name": "InitDiamond",
+        "fullyQualifiedName": "InitDiamond.sol:InitDiamond",
+        "sender": "0x931c3aC09202650148Edb2316e97815f904CF4fa",
+        "txHash": "0x3481605c3e6b0f425b0f3a0ba3b4bee1dde9c17d5c93668baf3a2104dd769352",
+        "onChain": {
+          "address": "0x909677eBF6e09B669dBe01950E9F3FfCe7602097",
+          "constructorArgs": []
+        }
+      }
+    ]
+  },
+  "baseSepolia": {
+    "chainId": 84532,
+    "contracts": [
+      {
+        "name": "DiamondProxy",
+        "fullyQualifiedName": "DiamondProxy.sol:DiamondProxy",
+        "sender": "0x931c3aC09202650148Edb2316e97815f904CF4fa",
+        "txHash": "0x13cd4877aada07e535e8e6e903870f92398bc2a7b13515ed150e0195337c5687",
+        "onChain": {
+          "address": "0x0c7C1595fd7E2f38d97aB0c00878E3041001C8B5",
+          "constructorArgs": [
+            "0x931c3aC09202650148Edb2316e97815f904CF4fa"
+          ]
+        }
+      },
+      {
+        "name": "ACLFacet",
+        "fullyQualifiedName": "ACLFacet.sol:ACLFacet",
+        "sender": "0x931c3aC09202650148Edb2316e97815f904CF4fa",
+        "txHash": "0x109a7c09aae6161356f2c22513f34cc1af24b20b83da08b73cd93c3c036cdc0a",
+        "onChain": {
+          "address": "0x59A558A7bcb9622e43f60cA76e84228b61d11637",
+          "constructorArgs": []
+        }
+      },
+      {
+        "name": "GovernanceFacet",
+        "fullyQualifiedName": "GovernanceFacet.sol:GovernanceFacet",
+        "sender": "0x931c3aC09202650148Edb2316e97815f904CF4fa",
+        "txHash": "0xa57521d9f94c3e103334c9390411a03821023f0930b04e1556e7f351ffb81ee8",
+        "onChain": {
+          "address": "0xebE47b92571F6156d9b04e909fb57aa1F6424Ad0",
+          "constructorArgs": []
+        }
+      },
+      {
+        "name": "NaymsOwnershipFacet",
+        "fullyQualifiedName": "NaymsOwnershipFacet.sol:NaymsOwnershipFacet",
+        "sender": "0x931c3aC09202650148Edb2316e97815f904CF4fa",
+        "txHash": "0x9a02fbecb6458f89d9bbb82e0592be799f2305c4d2fa318320a1a51101941577",
+        "onChain": {
+          "address": "0x4d64A1F6dd5C35B2343A10EA35FE04EAC945115f",
+          "constructorArgs": []
+        }
+      },
+      {
+        "name": "NaymsTokenFacet",
+        "fullyQualifiedName": "NaymsTokenFacet.sol:NaymsTokenFacet",
+        "sender": "0x931c3aC09202650148Edb2316e97815f904CF4fa",
+        "txHash": "0x60b326b74bdd556e4a13bba184e1ce741a2cb1a3c8ee95ca1aa4898a71600ad5",
+        "onChain": {
+          "address": "0x0667F29542F864098e9455Ab07438E52AA919A81",
+          "constructorArgs": []
+        }
+      },
+      {
+        "name": "PhasedDiamondCutFacet",
+        "fullyQualifiedName": "PhasedDiamondCutFacet.sol:PhasedDiamondCutFacet",
+        "sender": "0x931c3aC09202650148Edb2316e97815f904CF4fa",
+        "txHash": "0xc0541c021038c4700e0fe2d0a08a4671076962914667b97caca57799f800f909",
+        "onChain": {
+          "address": "0x072C179dEa71d709Ac97D2dd1CfD3a3C0230CfBb",
+          "constructorArgs": []
+        }
+      },
+      {
+        "name": "InitDiamond",
+        "fullyQualifiedName": "InitDiamond.sol:InitDiamond",
+        "sender": "0x931c3aC09202650148Edb2316e97815f904CF4fa",
+        "txHash": "0xc1b6dab7a82bb2f33ef9de3a85250032321b81be5b3f5946d4ddb7ef8a78ec2a",
+        "onChain": {
+          "address": "0x815714f90C35FD7cd131251989660ce51CB200ce",
+          "constructorArgs": []
+        }
+      }
+    ]
+  }
+}
