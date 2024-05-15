@@ -74,7 +74,15 @@ exports.calculateUpgradeId = async (cutFile) => {
                 type: "function",
                 name: "calculateUpgradeId",
                 inputs: [
-                    { type: "tuple(address facetAddress, uint8 action, bytes4[] functionSelectors)[]", name: "cuts" },
+                    {
+                        components: [
+                            { name: "facetAddress", type: "address" },
+                            { name: "action", type: "uint8" },
+                            { name: "functionSelectors", type: "bytes4[]" },
+                        ],
+                        name: "cuts",
+                        type: "tuple[]",
+                    },
                     { type: "address", name: "initContractAddress" },
                     { type: "bytes", name: "initData" },
                 ],
