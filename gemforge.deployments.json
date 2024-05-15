@@ -74,6 +74,21 @@
       }
     ]
   },
+  "baseSepoliaFork": {
+    "chainId": 84532,
+    "contracts": [
+      {
+        "name": "DiamondProxy",
+        "fullyQualifiedName": "DiamondProxy.sol:DiamondProxy",
+        "sender": "0x931c3aC09202650148Edb2316e97815f904CF4fa",
+        "txHash": "0x13cd4877aada07e535e8e6e903870f92398bc2a7b13515ed150e0195337c5687",
+        "onChain": {
+          "address": "0x0c7C1595fd7E2f38d97aB0c00878E3041001C8B5",
+          "constructorArgs": ["0x931c3aC09202650148Edb2316e97815f904CF4fa"]
+        }
+      }
+    ]
+  },
   "baseSepolia": {
     "chainId": 84532,
     "contracts": [
