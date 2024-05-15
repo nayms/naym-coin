@@ -2,7 +2,7 @@ const path = require("path");
 const rootFolder = path.join(__dirname, "..", "..", "..");
 
 const { createPublicClient, createWalletClient, http, encodeFunctionData, keccak256 } = require("viem");
-const { mainnet, baseSepolia, base, sepolia } = require("viem/chains");
+const { mainnet, baseSepolia, base, sepolia, aurora, auroraTestnet } = require("viem/chains");
 const config = require(path.join(rootFolder, "gemforge.config.cjs"));
 const deployments = require(path.join(rootFolder, "gemforge.deployments.json"));
 const { abi } = require(path.join(rootFolder, "out/IDiamondProxy.sol/IDiamondProxy.json"));
@@ -13,6 +13,8 @@ const chainMap = {
     11155111: sepolia,
     8453: base,
     84532: baseSepolia,
+    1313161554: aurora,
+    1313161555: auroraTestnet,
 };
 
 const getChainFromRpcUrl = async (rpcUrl) => {
