@@ -33,7 +33,7 @@ const loadTarget = (exports.loadTarget = async (targetId, walletIdAttr) => {
 
     const chain = await getChainFromRpcUrl(network.rpcUrl);
 
-    const client = createPublicClient({
+    const publicClient = createPublicClient({
         chain,
         transport: http(network.rpcUrl),
     });
@@ -42,16 +42,18 @@ const loadTarget = (exports.loadTarget = async (targetId, walletIdAttr) => {
         wallet.type === "mnemonic"
             ? createWalletClient({
                   mnemonic: wallet.config.words,
+                  chain,
                   path: `m/44'/60'/0'/0/${wallet.config.index || 0}`,
                   transport: http(network.rpcUrl),
               })
             : createWalletClient({
                   privateKey: wallet.config.key,
+                  chain,
                   transport: http(network.rpcUrl),
               });
 
     const proxyAddress = getProxyAddress(targetId);
-    const contract = proxyAddress ? { address: proxyAddress, abi, client: walletClient } : null;
+    const contract = proxyAddress ? { address: proxyAddress, abi, walletClient } : null;
 
     return {
         networkId,
@@ -59,7 +61,8 @@ const loadTarget = (exports.loadTarget = async (targetId, walletIdAttr) => {
         walletId,
         wallet,
         proxyAddress,
-        client,
+        publicClient,
+        walletClient,
         contract,
     };
 });
@@ -106,21 +109,23 @@ exports.enableUpgradeViaGovernance = async (targetId, cutFile) => {
     const upgradeId = await exports.calculateUpgradeId(cutFile);
     console.log(`Enabling upgrade in contract, upgrade id: ${upgradeId}`);
 
-    const tx = await contract.client.writeContract({
+    const [account] = await contract.walletClient.getAddresses();
+
+    const tx = await contract.walletClient.writeContract({
         address: contract.address,
         abi: contract.abi,
         functionName: "createUpgrade",
         args: [upgradeId],
+        account,
     });
-    console.log(`Transaction hash: ${tx.hash}`);
-
-    await tx.wait();
+    console.log(`Transaction: ${tx}`);
     console.log("Transaction mined!");
 };
 
 exports.assertUpgradeIdIsEnabled = async (targetId, upgradeId) => {
-    const { contract } = await loadTarget(targetId);
-    const val = await contract.client.readContract({
+    const { publicClient, contract } = await loadTarget(targetId);
+
+    const val = await publicClient.readContract({
         address: contract.address,
         abi: contract.abi,
         functionName: "getUpgrade",
