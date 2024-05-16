@@ -107,28 +107,31 @@ exports.enableUpgradeViaGovernance = async (targetId, cutFile) => {
     const upgradeId = await exports.calculateUpgradeId(cutFile);
     console.log(`Enabling upgrade in contract, upgrade id: ${upgradeId}`);
 
-    const [account] = await contract.client.getAddresses();
-
     const commonParams = {
         address: contract.address,
         abi: contract.abi,
         functionName: "createUpgrade",
         args: [upgradeId],
-        account,
     };
 
     // Simulate and stop execution if revert
     await contract.client.simulateContract(commonParams);
 
     // Execute the actual contract call
-    const tx = await contract.client.writeContract(commonParams);
+    const txHash = await contract.client.writeContract(commonParams);
 
-    console.log(`Transaction: ${tx}`);
-    console.log("Transaction mined!");
+    console.log(`Transaction: ${txHash}`);
+
+    // Wait for the transaction to be mined
+    await contract.client.waitForTransactionReceipt({ hash: txHash });
+
+    console.log("createUpgrade transaction mined!");
 };
 
 exports.assertUpgradeIdIsEnabled = async (targetId, upgradeId) => {
     const { client, contract } = await loadTarget(targetId);
+
+    console.log("checking Upgrade ID:", upgradeId);
 
     const val = await client.readContract({
         address: contract.address,
