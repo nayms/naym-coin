@@ -34,7 +34,14 @@ const loadTarget = (exports.loadTarget = async (targetId, walletIdAttr) => {
 
     const chain = await getChainFromRpcUrl(network.rpcUrl);
 
-    const account = wallet.type === "mnemonic" ? mnemonicToAccount(wallet.config.words) : privateKeyToAccount(wallet.config.key);
+    const account =
+        wallet.type === "mnemonic"
+            ? mnemonicToAccount(wallet.config.words, {
+                  accountIndex: wallet.config.index || 0,
+              })
+            : privateKeyToAccount(wallet.config.key);
+
+    console.log("Account Address:", account.address);
 
     const client = createWalletClient({
         account,
