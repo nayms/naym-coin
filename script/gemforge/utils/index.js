@@ -1,7 +1,8 @@
 const path = require("path");
 const rootFolder = path.join(__dirname, "..", "..", "..");
 
-const { createPublicClient, createWalletClient, http, encodeAbiParameters, keccak256 } = require("viem");
+const { createPublicClient, createWalletClient, http, encodeAbiParameters, keccak256, publicActions } = require("viem");
+const { mnemonicToAccount, privateKeyToAccount } = require("viem/accounts");
 const { mainnet, baseSepolia, base, sepolia, aurora, auroraTestnet } = require("viem/chains");
 const config = require(path.join(rootFolder, "gemforge.config.cjs"));
 const deployments = require(path.join(rootFolder, "gemforge.deployments.json"));
@@ -33,27 +34,16 @@ const loadTarget = (exports.loadTarget = async (targetId, walletIdAttr) => {
 
     const chain = await getChainFromRpcUrl(network.rpcUrl);
 
-    const publicClient = createPublicClient({
+    const account = wallet.type === "mnemonic" ? mnemonicToAccount(wallet.config.words) : privateKeyToAccount(wallet.config.key);
+
+    const client = createWalletClient({
+        account,
         chain,
         transport: http(network.rpcUrl),
-    });
-
-    const walletClient =
-        wallet.type === "mnemonic"
-            ? createWalletClient({
-                  mnemonic: wallet.config.words,
-                  chain,
-                  path: `m/44'/60'/0'/0/${wallet.config.index || 0}`,
-                  transport: http(network.rpcUrl),
-              })
-            : createWalletClient({
-                  privateKey: wallet.config.key,
-                  chain,
-                  transport: http(network.rpcUrl),
-              });
+    }).extend(publicActions);
 
     const proxyAddress = getProxyAddress(targetId);
-    const contract = proxyAddress ? { address: proxyAddress, abi, walletClient } : null;
+    const contract = proxyAddress ? { address: proxyAddress, abi, client } : null;
 
     return {
         networkId,
@@ -61,8 +51,7 @@ const loadTarget = (exports.loadTarget = async (targetId, walletIdAttr) => {
         walletId,
         wallet,
         proxyAddress,
-        publicClient,
-        walletClient,
+        client,
         contract,
     };
 });
@@ -102,7 +91,7 @@ exports.calculateUpgradeId = async (cutFile) => {
 };
 
 exports.enableUpgradeViaGovernance = async (targetId, cutFile) => {
-    if (deployments[targetId].chaiId === 1 || deployments[targetId].chaiId === 8453) {
+    if (deployments[targetId].chainId === 1 || deployments[targetId].chainId === 8453 || deployments[targetId].chainId === 1313161554) {
         throw new Error("Only testnet upgrades can be automated!");
     }
 
@@ -111,23 +100,30 @@ exports.enableUpgradeViaGovernance = async (targetId, cutFile) => {
     const upgradeId = await exports.calculateUpgradeId(cutFile);
     console.log(`Enabling upgrade in contract, upgrade id: ${upgradeId}`);
 
-    const [account] = await contract.walletClient.getAddresses();
+    const [account] = await contract.client.getAddresses();
 
-    const tx = await contract.walletClient.writeContract({
+    const commonParams = {
         address: contract.address,
         abi: contract.abi,
         functionName: "createUpgrade",
         args: [upgradeId],
         account,
-    });
+    };
+
+    // Simulate and stop execution if revert
+    await contract.client.simulateContract(commonParams);
+
+    // Execute the actual contract call
+    const tx = await contract.client.writeContract(commonParams);
+
     console.log(`Transaction: ${tx}`);
     console.log("Transaction mined!");
 };
 
 exports.assertUpgradeIdIsEnabled = async (targetId, upgradeId) => {
-    const { publicClient, contract } = await loadTarget(targetId);
+    const { client, contract } = await loadTarget(targetId);
 
-    const val = await publicClient.readContract({
+    const val = await client.readContract({
         address: contract.address,
         abi: contract.abi,
         functionName: "getUpgrade",
