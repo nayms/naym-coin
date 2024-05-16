@@ -102,10 +102,9 @@ module.exports = {
       },
     },
     wallet3: {
-      type: "mnemonic",
+      type: "private-key",
       config: {
-        words: MNEMONIC,
-        index: 0,
+        key: process.env.CONTRACT_OWNER || "",
       },
     },
   },
