@@ -20,5 +20,7 @@ sepolia = "${ETH_SEPOLIA_RPC_URL}"
 base = "${BASE_MAINNET_RPC_URL}"
 bases = "${BASE_SEPOLIA_RPC_URL}"
 anvil = "${LOCAL_RPC_URL}"
+aurora = "${AURORA_MAINNET_RPC_URL}"
+aurora_testnet = "${AURORA_TESTNET_RPC_URL}"
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
