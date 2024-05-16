@@ -1,7 +1,7 @@
 const path = require("path");
 const rootFolder = path.join(__dirname, "..", "..", "..");
 
-const { createPublicClient, createWalletClient, http, encodeFunctionData, keccak256 } = require("viem");
+const { createPublicClient, createWalletClient, http, encodeAbiParameters, keccak256 } = require("viem");
 const { mainnet, baseSepolia, base, sepolia, aurora, auroraTestnet } = require("viem/chains");
 const config = require(path.join(rootFolder, "gemforge.config.cjs"));
 const deployments = require(path.join(rootFolder, "gemforge.deployments.json"));
@@ -72,30 +72,32 @@ const getProxyAddress = (exports.getProxyAddress = (targetId) => {
 });
 
 exports.calculateUpgradeId = async (cutFile) => {
-    const cutData = require(cutFile);
-    const encodedData = encodeFunctionData({
-        abi: [
-            {
-                type: "function",
-                name: "calculateUpgradeId",
-                inputs: [
-                    {
-                        components: [
-                            { name: "facetAddress", type: "address" },
-                            { name: "action", type: "uint8" },
-                            { name: "functionSelectors", type: "bytes4[]" },
-                        ],
-                        name: "cuts",
-                        type: "tuple[]",
-                    },
-                    { type: "address", name: "initContractAddress" },
-                    { type: "bytes", name: "initData" },
-                ],
-            },
-        ],
-        functionName: "calculateUpgradeId",
-        args: [cutData.cuts, cutData.initContractAddress, cutData.initData],
-    });
+    const cutData = require(path.resolve(cutFile));
+    const abiParameters = [
+        {
+            type: "tuple[]",
+            components: [
+                { name: "facetAddress", type: "address" },
+                { name: "action", type: "uint8" },
+                { name: "functionSelectors", type: "bytes4[]" },
+            ],
+            name: "cuts",
+        },
+        { name: "initContractAddress", type: "address" },
+        { name: "initData", type: "bytes" },
+    ];
+
+    const values = [
+        cutData.cuts.map((cut) => ({
+            facetAddress: cut.facetAddress,
+            action: cut.action,
+            functionSelectors: cut.functionSelectors,
+        })),
+        cutData.initContractAddress,
+        cutData.initData,
+    ];
+
+    const encodedData = encodeAbiParameters(abiParameters, values);
     return keccak256(encodedData);
 };
 
