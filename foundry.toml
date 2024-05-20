@@ -4,7 +4,12 @@ out = "out"
 libs = ["lib"]
 remappings = [
   "forge-std/=lib/forge-std/src/",
+  "diamond-2-hardhat/=lib/diamond-2-hardhat/contracts/",
   "openzeppelin/=lib/openzeppelin-contracts/contracts/",
+  'solidity-bytes-utils/=lib/solidity-bytes-utils/',
+  '@layerzerolabs/lz-evm-protocol-v2/=node_modules/@layerzerolabs/lz-evm-protocol-v2/',
+  '@layerzerolabs/lz-evm-messagelib-v2/=node_modules/@layerzerolabs/lz-evm-messagelib-v2/',
+  '@layerzerolabs/lz-evm-v1-0.7/=node_modules/@layerzerolabs/lz-evm-v1-0.7/',
 ]
 cache = true
 force = false

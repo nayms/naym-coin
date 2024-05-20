@@ -204,6 +204,21 @@
     wrap-ansi "^8.1.0"
     wrap-ansi-cjs "npm:wrap-ansi@^7.0.0"
 
+"@layerzerolabs/lz-evm-messagelib-v2@^2.3.8":
+  version "2.3.8"
+  resolved "https://registry.yarnpkg.com/@layerzerolabs/lz-evm-messagelib-v2/-/lz-evm-messagelib-v2-2.3.8.tgz#492e9b579f2248389956c5d882f12dd0e614884f"
+  integrity sha512-Umc0eKSNDO+/VoIlyl+CC8F2RfiHsM4X2bTUkmVKJDMDeMBt+WuaLeUvKGnp0TTVc7rMDbPyF4QI/86oZPHZIQ==
+
+"@layerzerolabs/lz-evm-protocol-v2@^2.3.8":
+  version "2.3.8"
+  resolved "https://registry.yarnpkg.com/@layerzerolabs/lz-evm-protocol-v2/-/lz-evm-protocol-v2-2.3.8.tgz#86cdb5ce2652b04d837f4421f5a0b40bf069fbc8"
+  integrity sha512-Xa/qOuGBaEG5/v2p46xyjAB+cUth9atnD4ELCphX7VasymA9J0CDbg+ay0WAYsONB0oAbbGEPTq3XbxxtHxelA==
+
+"@layerzerolabs/lz-evm-v1-0.7@^2.3.8":
+  version "2.3.8"
+  resolved "https://registry.yarnpkg.com/@layerzerolabs/lz-evm-v1-0.7/-/lz-evm-v1-0.7-2.3.8.tgz#66a0df3a34439607361be02d8f1b514c5403646c"
+  integrity sha512-ZlscZbDbo5fnjNY7EHkpM5wY8i+lmyjIlEYzhkG+tI0mxZ6Mhn4QPfRUduNwV1r282XteOs6oXuNc7kF5wIx9w==
+
 "@noble/curves@1.2.0", "@noble/curves@~1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.2.0.tgz#92d7e12e4e49b23105a2555c6984d41733d65c35"
