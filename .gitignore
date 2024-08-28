@@ -1,3 +1,5 @@
+.vscode/
+
 # Compiler files
 cache/
 out/
@@ -12,7 +14,7 @@ docs/
 
 # Dotenv file
 .env
-nayms_mnemonic.txt
+nayms_mnemonic**.txt
 
 # node/bun
 node_modules
