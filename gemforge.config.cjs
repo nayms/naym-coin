@@ -6,8 +6,10 @@ const { mnemonicToAccount } = require("viem/accounts");
 const MNEMONIC = fs.existsSync("./nayms_mnemonic.txt") ? fs.readFileSync("./nayms_mnemonic.txt").toString().trim() : "test test test test test test test test test test test junk";
 
 const sysAdminAddress = mnemonicToAccount(MNEMONIC).address;
+const mainnetSysAdminAddress = process.env.NAYM_SYS_ADMIN_ADDRESS;
 
-console.log("The sysAdminAddress is", sysAdminAddress);
+console.log("The sysAdminAddress is: ", sysAdminAddress);
+console.log("The mainnetSysAdminAddress is: ", mainnetSysAdminAddress);
 
 module.exports = {
   // Configuration file version
@@ -159,17 +161,18 @@ module.exports = {
     },
   },
   targets: {
+    // `governance` attribute is only releveant for testnets, it's a wallet to use to auto approve the upgrade ID within the script
     local: { network: "local", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
     sepolia: { network: "sepolia", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
     sepoliaFork: { network: "local", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
-    mainnet: { network: "mainnet", wallet: "wallet3", initArgs: [sysAdminAddress] },
-    mainnetFork: { network: "local", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
+    mainnet: { network: "mainnet", wallet: "wallet3", initArgs: [mainnetSysAdminAddress] },
+    mainnetFork: { network: "local", wallet: "devOwnerWallet", initArgs: [mainnetSysAdminAddress] },
     baseSepolia: { network: "baseSepolia", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
     baseSepoliaFork: { network: "local", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
-    base: { network: "base", wallet: "wallet3", initArgs: [sysAdminAddress] },
-    baseFork: { network: "local", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
-    aurora: { network: "aurora", wallet: "devOwnerWallet", initArgs: [sysAdminAddress] },
-    auroraFork: { network: "local", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
+    base: { network: "base", wallet: "wallet3", initArgs: [mainnetSysAdminAddress] },
+    baseFork: { network: "local", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [mainnetSysAdminAddress] },
+    aurora: { network: "aurora", wallet: "wallet3", initArgs: [mainnetSysAdminAddress] },
+    auroraFork: { network: "local", wallet: "wallet3", governance: "devSysAdminWallet", initArgs: [mainnetSysAdminAddress] },
     auroraTestnet: { network: "auroraTestnet", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
     auroraTestnetFork: { network: "local", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
   },
