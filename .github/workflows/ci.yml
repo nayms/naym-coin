@@ -18,6 +18,13 @@ jobs:
       packages: read
       contents: read
       security-events: write
+    env:
+      ETH_MAINNET_RPC_URL: ${{ secrets.ETH_MAINNET_RPC_URL }}
+      ETH_SEPOLIA_RPC_URL: ${{ secrets.ETH_SEPOLIA_RPC_URL }}
+      BASE_MAINNET_RPC_URL: ${{ secrets.BASE_MAINNET_RPC_URL }}
+      BASE_SEPOLIA_RPC_URL: ${{ secrets.BASE_SEPOLIA_RPC_URL }}
+      AURORA_MAINNET_RPC_URL: ${{ secrets.AURORA_MAINNET_RPC_URL}}
+      AURORA_TESTNET_RPC_URL: ${{ secrets.AURORA_TESTNET_RPC_URL}}
     container:
       image: ghcr.io/nayms/contracts-builder:latest
     steps:
@@ -42,24 +49,10 @@ jobs:
       - name: Compile
         run: yarn build
         id: build
-        env:
-          ETH_MAINNET_RPC_URL: ${{ secrets.ETH_MAINNET_RPC_URL }}
-          ETH_SEPOLIA_RPC_URL: ${{ secrets.ETH_SEPOLIA_RPC_URL }}
-          BASE_MAINNET_RPC_URL: ${{ secrets.BASE_MAINNET_RPC_URL }}
-          BASE_SEPOLIA_RPC_URL: ${{ secrets.BASE_SEPOLIA_RPC_URL }}
-          AURORA_MAINNET_RPC_URL: ${{ secrets.AURORA_MAINNET_RPC_URL}}
-          AURORA_TESTNET_RPC_URL: ${{ secrets.AURORA_TESTNET_RPC_URL}}
 
       - name: Run tests with coverage
         run: yarn test-coverage
         id: test
-        env:
-          ETH_MAINNET_RPC_URL: ${{ secrets.ETH_MAINNET_RPC_URL }}
-          ETH_SEPOLIA_RPC_URL: ${{ secrets.ETH_SEPOLIA_RPC_URL }}
-          BASE_MAINNET_RPC_URL: ${{ secrets.BASE_MAINNET_RPC_URL }}
-          BASE_SEPOLIA_RPC_URL: ${{ secrets.BASE_SEPOLIA_RPC_URL }}
-          AURORA_MAINNET_RPC_URL: ${{ secrets.AURORA_MAINNET_RPC_URL}}
-          AURORA_TESTNET_RPC_URL: ${{ secrets.AURORA_TESTNET_RPC_URL}}
 
       - name: Upload coverage report to Coveralls
         uses: coverallsapp/github-action@v2
