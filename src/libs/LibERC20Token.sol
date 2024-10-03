@@ -69,8 +69,6 @@ library LibERC20Token {
      * e.g. implement automatic token fees, slashing mechanisms, etc.
      *
      * Emits a {Transfer} event.
-     *
-     * NOTE: This function is not virtual, {_update} should be overridden instead.
      */
     function _transfer(address from, address to, uint256 value) internal {
         if (from == address(0)) {
@@ -125,8 +123,6 @@ library LibERC20Token {
      * Relies on the `_update` mechanism
      *
      * Emits a {Transfer} event with `from` set to the zero address.
-     *
-     * NOTE: This function is not virtual, {_update} should be overridden instead.
      */
     function _mint(address account, uint256 value) internal {
         if (account == address(0)) {
@@ -140,8 +136,6 @@ library LibERC20Token {
      * Relies on the `_update` mechanism.
      *
      * Emits a {Transfer} event with `to` set to the zero address.
-     *
-     * NOTE: This function is not virtual, {_update} should be overridden instead
      */
     function _burn(address account, uint256 value) internal {
         if (account == address(0)) {
