@@ -166,7 +166,7 @@ module.exports = {
     sepolia: { network: "sepolia", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
     sepoliaFork: { network: "local", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
     mainnet: { network: "mainnet", wallet: "deployerWallet", initArgs: [mainnetSysAdminAddress], create3Salt: process.env.NAYM_TOKEN_SALT },
-    mainnetFork: { network: "local", wallet: "devOwnerWallet", initArgs: [mainnetSysAdminAddress], create3Salt: process.env.NAYM_TOKEN_SALT },
+    mainnetFork: { network: "local", wallet: "deployerWallet", initArgs: [mainnetSysAdminAddress], create3Salt: process.env.NAYM_TOKEN_SALT },
     baseSepolia: { network: "baseSepolia", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
     baseSepoliaFork: { network: "local", wallet: "devOwnerWallet", governance: "devSysAdminWallet", initArgs: [sysAdminAddress] },
     base: { network: "base", wallet: "deployerWallet", initArgs: [mainnetSysAdminAddress], create3Salt: process.env.NAYM_TOKEN_SALT },
