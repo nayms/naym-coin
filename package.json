@@ -22,7 +22,7 @@
     "@commitlint/config-conventional": "^18.6.2",
     "chalk": "4",
     "dotenv": "^16.4.5",
-    "gemforge": "^2.7.0",
+    "gemforge": "^2.9.2",
     "husky": "^9.0.11",
     "prettier": "^3.2.5",
     "viem": "^2.10.5"
