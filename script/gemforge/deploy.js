@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require("fs");
 const rootFolder = path.join(__dirname, "..", "..");
 const config = require(path.join(rootFolder, "gemforge.config.cjs"));
+const yargs = require("yargs");
 
 const execa = require("execa");
 
@@ -43,7 +44,9 @@ const assertThatUpgradeIsEnabled = async (targetId, cutFile) => {
         return await execa.command(cmd, { ...opts, shell: true, stdio: "inherit", cwd: rootFolder });
     };
 
-    const targetArg = process.argv[2];
+    const { argv } = yargs;
+
+    const targetArg = argv._[0];
 
     if (!targetArg) {
         throw new Error(`Please specify a target!`);
@@ -53,45 +56,39 @@ const assertThatUpgradeIsEnabled = async (targetId, cutFile) => {
 
     await _showTargetInfo(targetArg);
 
-    switch (process.argv[3]) {
-        case "--dry": {
-            console.log("Dry-run Deployment");
-            await $(`yarn gemforge deploy ${targetArg} --dry`);
-            break;
+    if (argv.dry) {
+        console.log("Dry-run Deployment");
+        await $(`yarn gemforge deploy ${targetArg} --dry`);
+    } else if (argv.fresh) {
+        console.log("Fresh Deployment");
+        await $(`yarn gemforge deploy ${targetArg} -n`);
+    } else if (argv.upgradeStart) {
+        console.log("Upgrade - Deploy Facets");
+        if (fs.existsSync(cutFile)) {
+            fs.unlinkSync(cutFile);
         }
-        case "--fresh": {
-            console.log(`Fresh Deploy`);
-            await $(`yarn gemforge deploy ${targetArg} -n`);
-            break;
+        const upgradeInitArgs = (argv.upgradeInitContract && argv.upgradeInitMethod) 
+            ? `--upgrade-init-contract ${argv.upgradeInitContract} --upgrade-init-method ${argv.upgradeInitMethod}`
+            : "";
+        await $(`yarn gemforge deploy ${targetArg} --pause-cut-to-file ${cutFile} ${upgradeInitArgs}`);
+        if (!fs.existsSync(cutFile)) {
+            console.log(`No upgrade necessary!`);
+        } else {
+            await tellUserToEnableUpgrade(targetArg, cutFile);
         }
-        case "--upgrade-start": {
-            console.log(`Upgrade - Deploy Facets`);
-            if (fs.existsSync(cutFile)) {
-                fs.unlinkSync(cutFile);
-            }
-            await $(`yarn gemforge deploy ${targetArg} --pause-cut-to-file ${cutFile}`);
-            if (!fs.existsSync(cutFile)) {
-                console.log(`No upgrade necessary!`);
-            } else {
-                await tellUserToEnableUpgrade(targetArg, cutFile);
-            }
-            break;
+    } else if (argv.upgradeFinish) {
+        console.log("Upgrade - Diamond Cut");
+        if (!fs.existsSync(cutFile)) {
+            throw new Error(`Cut JSON file not found - please run the first upgrade step first!`);
         }
-        case "--upgrade-finish": {
-            console.log(`Upgrade - Diamond Cut`);
-            if (!fs.existsSync(cutFile)) {
-                throw new Error(`Cut JSON file not found - please run the first upgrade step first!`);
-            }
-            if (targetArg !== "mainnet" && targetArg !== "mainnetFork" && targetArg !== "base" && targetArg !== "baseFork") {
-                await enableUpgradeViaGovernance(targetArg, cutFile);
-            }
-            await assertThatUpgradeIsEnabled(targetArg, cutFile);
-            await $(`yarn gemforge deploy ${targetArg} --resume-cut-from-file ${cutFile}`);
-            break;
+        if (targetArg !== "mainnet" && targetArg !== "mainnetFork" && targetArg !== "base" && targetArg !== "baseFork") {
+            await enableUpgradeViaGovernance(targetArg, cutFile);
         }
-        default: {
-            throw new Error("Expecting one of: --fresh, --upgrade-start, --upgrade-finish");
-        }
+
+        await assertThatUpgradeIsEnabled(targetArg, cutFile);
+        await $(`yarn gemforge deploy ${targetArg} --resume-cut-from-file ${cutFile}`);
+    } else {
+        throw new Error("Expecting one of: --fresh, --upgrade-start, --upgrade-finish");
     }
 
     console.log(`Done!`);

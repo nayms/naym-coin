@@ -3,13 +3,14 @@ const rootFolder = path.join(__dirname, "..", "..", "..");
 
 const { createPublicClient, createWalletClient, http, encodeAbiParameters, keccak256, publicActions } = require("viem");
 const { mnemonicToAccount, privateKeyToAccount } = require("viem/accounts");
-const { mainnet, baseSepolia, base, sepolia, aurora, auroraTestnet } = require("viem/chains");
+const { mainnet, baseSepolia, base, sepolia, aurora, auroraTestnet, hardhat } = require("viem/chains");
 const config = require(path.join(rootFolder, "gemforge.config.cjs"));
 const deployments = require(path.join(rootFolder, "gemforge.deployments.json"));
 const { abi } = require(path.join(rootFolder, "out/IDiamondProxy.sol/IDiamondProxy.json"));
 
 // Mapping of chain IDs to chain objects
 const chainMap = {
+    31337: hardhat,
     1: mainnet,
     11155111: sepolia,
     8453: base,
@@ -23,6 +24,7 @@ const getChainFromRpcUrl = async (rpcUrl) => {
         transport: http(rpcUrl),
     });
     const chainId = await client.getChainId();
+    console.log("Chain ID:", chainId);
     return chainMap[chainId];
 };
 

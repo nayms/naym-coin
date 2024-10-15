@@ -28,6 +28,8 @@ struct AppStorage {
     mapping(address sysAdmin => bool isSysAdmin) sysAdmins;
     uint256 sysAdminsCount;
     address minter;
+    // upgrade initialization test 1
+    bool initializationTest1;
 }
 
 library LibAppStorage {
