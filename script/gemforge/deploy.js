@@ -70,7 +70,7 @@ const assertThatUpgradeIsEnabled = async (targetId, cutFile) => {
         const upgradeInitArgs = (argv.upgradeInitContract && argv.upgradeInitMethod) 
             ? `--upgrade-init-contract ${argv.upgradeInitContract} --upgrade-init-method ${argv.upgradeInitMethod}`
             : "";
-        $(`yarn gemforge deploy ${targetArg} --pause-cut-to-file ${cutFile} ${upgradeInitArgs}`);
+        await $(`yarn gemforge deploy ${targetArg} --pause-cut-to-file ${cutFile} ${upgradeInitArgs}`);
         if (!fs.existsSync(cutFile)) {
             console.log(`No upgrade necessary!`);
         } else {
