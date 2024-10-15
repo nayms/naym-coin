@@ -647,10 +647,10 @@ function-bind@^1.1.2:
   resolved "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.2.tgz#2c02d864d97f3ea6c8830c464cbd11ab6eab7a1c"
   integrity sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==
 
-gemforge@^2.9.2:
-  version "2.9.2"
-  resolved "https://registry.yarnpkg.com/gemforge/-/gemforge-2.9.2.tgz#984b34b8fa741cab87df87f1574f6c4f0590b5df"
-  integrity sha512-DOZGUF7oQXGwfrZmm2t8Wc32es+d20Vx0zjA1xi2EbAs1IfnYDLeXgUxAMY3Vn+UtwwPDDqVAzbSyt68K6GGFA==
+gemforge@^2.12.1:
+  version "2.12.1"
+  resolved "https://registry.yarnpkg.com/gemforge/-/gemforge-2.12.1.tgz#7b02725359b61e74ba93550c22bfcbb4909f8089"
+  integrity sha512-3grKf0hHGKUG+TmVW1MOttxRM7yX1XgAZlSgHQOtmK0+V/Nrk4QVLydMNSJeTyFYKYHl10i1qpe7mBPJrWgMmQ==
   dependencies:
     "@solidity-parser/parser" "^0.16.1"
     bigval "^1.7.0"
@@ -1575,7 +1575,7 @@ yargs-parser@^21.1.1:
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-21.1.1.tgz#9096bceebf990d21bb31fa9516e0ede294a77d35"
   integrity sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==
 
-yargs@^17.0.0:
+yargs@^17.0.0, yargs@^17.7.2:
   version "17.7.2"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-17.7.2.tgz#991df39aca675a192b816e1e0363f9d75d2aa269"
   integrity sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==
