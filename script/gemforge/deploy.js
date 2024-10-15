@@ -40,20 +40,48 @@ const assertThatUpgradeIsEnabled = async (targetId, cutFile) => {
         if (typeof cmd !== "string") {
             throw new Error("Command must be a string");
         }
-        return await execa.command(cmd, { ...opts, shell: true, stdio: "inherit", cwd: rootFolder });
+        return await execa.command(cmd, {
+            ...opts,
+            shell: true,
+            stdio: "inherit",
+            cwd: rootFolder,
+        });
     };
 
-    const targetArg = process.argv[2];
+    const args = process.argv.slice(2);
+
+    const targetArg = args[0];
 
     if (!targetArg) {
         throw new Error(`Please specify a target!`);
+    }
+
+    const actionArg = args[1];
+
+    if (!actionArg) {
+        throw new Error("Expecting one of: --fresh, --upgrade-start, --upgrade-finish");
+    }
+
+    const options = {};
+
+    // Parse additional options
+    for (let i = 2; i < args.length; i++) {
+        const arg = args[i];
+        if (arg.startsWith("--")) {
+            const key = arg.slice(2);
+            const value = args[i + 1] && !args[i + 1].startsWith("--") ? args[i + 1] : true;
+            options[key] = value;
+            if (value !== true) {
+                i++;
+            }
+        }
     }
 
     const cutFile = path.join(rootFolder, ".gemforge/cut.json");
 
     await _showTargetInfo(targetArg);
 
-    switch (process.argv[3]) {
+    switch (actionArg) {
         case "--dry": {
             console.log("Dry-run Deployment");
             await $(`yarn gemforge deploy ${targetArg} --dry`);
@@ -69,7 +97,18 @@ const assertThatUpgradeIsEnabled = async (targetId, cutFile) => {
             if (fs.existsSync(cutFile)) {
                 fs.unlinkSync(cutFile);
             }
-            await $(`yarn gemforge deploy ${targetArg} --pause-cut-to-file ${cutFile}`);
+
+            let deployCmd = `yarn gemforge deploy ${targetArg} --pause-cut-to-file ${cutFile}`;
+
+            if (options["upgrade-init-contract"]) {
+                deployCmd += ` --upgrade-init-contract ${options["upgrade-init-contract"]}`;
+            }
+            if (options["upgrade-init-method"]) {
+                deployCmd += ` --upgrade-init-method ${options["upgrade-init-method"]}`;
+            }
+
+            await $(deployCmd);
+
             if (!fs.existsSync(cutFile)) {
                 console.log(`No upgrade necessary!`);
             } else {
@@ -86,7 +125,17 @@ const assertThatUpgradeIsEnabled = async (targetId, cutFile) => {
                 await enableUpgradeViaGovernance(targetArg, cutFile);
             }
             await assertThatUpgradeIsEnabled(targetArg, cutFile);
-            await $(`yarn gemforge deploy ${targetArg} --resume-cut-from-file ${cutFile}`);
+
+            let deployCmd = `yarn gemforge deploy ${targetArg} --resume-cut-from-file ${cutFile}`;
+
+            if (options["upgrade-init-contract"]) {
+                deployCmd += ` --upgrade-init-contract ${options["upgrade-init-contract"]}`;
+            }
+            if (options["upgrade-init-method"]) {
+                deployCmd += ` --upgrade-init-method ${options["upgrade-init-method"]}`;
+            }
+
+            await $(deployCmd);
             break;
         }
         default: {
