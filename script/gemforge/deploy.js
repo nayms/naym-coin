@@ -7,6 +7,7 @@ const rootFolder = path.join(__dirname, "..", "..");
 const config = require(path.join(rootFolder, "gemforge.config.cjs"));
 
 const execa = require("execa");
+const yargs = require("yargs");
 
 const { getProxyAddress, calculateUpgradeId, assertUpgradeIdIsEnabled, enableUpgradeViaGovernance } = require("./utils");
 
@@ -48,34 +49,35 @@ const assertThatUpgradeIsEnabled = async (targetId, cutFile) => {
         });
     };
 
-    const args = process.argv.slice(2);
+    const argv = yargs(process.argv.slice(2))
+        .usage("Usage: $0 <target> <action> [options]")
+        .command("<target> <action>", "Deploy script")
+        .demandCommand(2, "You need to specify a target and an action")
+        .option("upgrade-init-contract", {
+            describe: "Name of the contract for upgrade initialization",
+            type: "string",
+        })
+        .option("upgrade-init-method", {
+            describe: "Name of the method for upgrade initialization",
+            type: "string",
+        })
+        .check((argv) => {
+            const actionArg = argv._[1];
 
-    const targetArg = args[0];
-
-    if (!targetArg) {
-        throw new Error(`Please specify a target!`);
-    }
-
-    const actionArg = args[1];
-
-    if (!actionArg) {
-        throw new Error("Expecting one of: --fresh, --upgrade-start, --upgrade-finish");
-    }
-
-    const options = {};
-
-    // Parse additional options
-    for (let i = 2; i < args.length; i++) {
-        const arg = args[i];
-        if (arg.startsWith("--")) {
-            const key = arg.slice(2);
-            const value = args[i + 1] && !args[i + 1].startsWith("--") ? args[i + 1] : true;
-            options[key] = value;
-            if (value !== true) {
-                i++;
+            if (
+                (actionArg === "--upgrade-start" || actionArg === "--upgrade-finish") &&
+                ((argv["upgrade-init-contract"] && !argv["upgrade-init-method"]) || (!argv["upgrade-init-contract"] && argv["upgrade-init-method"]))
+            ) {
+                throw new Error("Both --upgrade-init-contract and --upgrade-init-method must be provided together");
             }
-        }
-    }
+            return true;
+        })
+        .help().argv;
+
+    const targetArg = argv._[0];
+    const actionArg = argv._[1];
+
+    const options = argv;
 
     const cutFile = path.join(rootFolder, ".gemforge/cut.json");
 
@@ -100,10 +102,8 @@ const assertThatUpgradeIsEnabled = async (targetId, cutFile) => {
 
             let deployCmd = `yarn gemforge deploy ${targetArg} --pause-cut-to-file ${cutFile}`;
 
-            if (options["upgrade-init-contract"]) {
+            if (options["upgrade-init-contract"] && options["upgrade-init-method"]) {
                 deployCmd += ` --upgrade-init-contract ${options["upgrade-init-contract"]}`;
-            }
-            if (options["upgrade-init-method"]) {
                 deployCmd += ` --upgrade-init-method ${options["upgrade-init-method"]}`;
             }
 
@@ -128,10 +128,8 @@ const assertThatUpgradeIsEnabled = async (targetId, cutFile) => {
 
             let deployCmd = `yarn gemforge deploy ${targetArg} --resume-cut-from-file ${cutFile}`;
 
-            if (options["upgrade-init-contract"]) {
+            if (options["upgrade-init-contract"] && options["upgrade-init-method"]) {
                 deployCmd += ` --upgrade-init-contract ${options["upgrade-init-contract"]}`;
-            }
-            if (options["upgrade-init-method"]) {
                 deployCmd += ` --upgrade-init-method ${options["upgrade-init-method"]}`;
             }
 
