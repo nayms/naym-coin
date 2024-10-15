@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "../libs/LibERC20Token.sol";
 
-contract InitializationTest {
+contract InitializationTest1 {
     function init() external {
         AppStorage storage s = LibAppStorage.diamondStorage();
         require(!s.initializationTest1, "InitializationTest already initialized");
