@@ -64,8 +64,14 @@ const assertThatUpgradeIsEnabled = async (targetId, cutFile) => {
         .check((argv) => {
             const actionArg = argv._[1];
 
+            const validActions = ["fresh", "upgrade-start", "upgrade-finish", "dry"];
+
+            if (!validActions.includes(actionArg)) {
+                throw new Error(`Invalid action "${actionArg}". Expecting one of: ${validActions.join(", ")}`);
+            }
+
             if (
-                (actionArg === "--upgrade-start" || actionArg === "--upgrade-finish") &&
+                (actionArg === "upgrade-start" || actionArg === "upgrade-finish") &&
                 ((argv["upgrade-init-contract"] && !argv["upgrade-init-method"]) || (!argv["upgrade-init-contract"] && argv["upgrade-init-method"]))
             ) {
                 throw new Error("Both --upgrade-init-contract and --upgrade-init-method must be provided together");
@@ -84,17 +90,17 @@ const assertThatUpgradeIsEnabled = async (targetId, cutFile) => {
     await _showTargetInfo(targetArg);
 
     switch (actionArg) {
-        case "--dry": {
+        case "dry": {
             console.log("Dry-run Deployment");
             await $(`yarn gemforge deploy ${targetArg} --dry`);
             break;
         }
-        case "--fresh": {
+        case "fresh": {
             console.log(`Fresh Deploy`);
             await $(`yarn gemforge deploy ${targetArg} -n`);
             break;
         }
-        case "--upgrade-start": {
+        case "upgrade-start": {
             console.log(`Upgrade - Deploy Facets`);
             if (fs.existsSync(cutFile)) {
                 fs.unlinkSync(cutFile);
@@ -116,7 +122,7 @@ const assertThatUpgradeIsEnabled = async (targetId, cutFile) => {
             }
             break;
         }
-        case "--upgrade-finish": {
+        case "upgrade-finish": {
             console.log(`Upgrade - Diamond Cut`);
             if (!fs.existsSync(cutFile)) {
                 throw new Error(`Cut JSON file not found - please run the first upgrade step first!`);
@@ -137,7 +143,7 @@ const assertThatUpgradeIsEnabled = async (targetId, cutFile) => {
             break;
         }
         default: {
-            throw new Error("Expecting one of: --fresh, --upgrade-start, --upgrade-finish");
+            throw new Error("Expecting one of: fresh, upgrade-start, upgrade-finish, dry");
         }
     }
 
