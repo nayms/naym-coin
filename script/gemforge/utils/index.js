@@ -1,4 +1,5 @@
-const path = require("path");
+const path = require("node:path");
+const execa = require("execa");
 const rootFolder = path.join(__dirname, "..", "..", "..");
 
 const { createPublicClient, createWalletClient, http, encodeAbiParameters, keccak256, publicActions } = require("viem");
@@ -144,4 +145,11 @@ exports.assertUpgradeIdIsEnabled = async (targetId, upgradeId) => {
     if (!val) {
         throw new Error(`Upgrade not found!`);
     }
+};
+
+exports.$ = async (cmd, opts = {}) => {
+    if (typeof cmd !== "string") {
+        throw new Error("Command must be a string");
+    }
+    return await execa.command(cmd, { ...opts, shell: true, stdio: "inherit", cwd: rootFolder });
 };

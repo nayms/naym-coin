@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 
 const chalk = require("chalk");
-const path = require("path");
-const fs = require("fs");
+const path = require("node:path");
+const fs = require("node:fs");
 const rootFolder = path.join(__dirname, "..", "..");
 const config = require(path.join(rootFolder, "gemforge.config.cjs"));
 const yargs = require("yargs");
-
-const execa = require("execa");
+const { $ } = require("./utils");
 
 const { getProxyAddress, calculateUpgradeId, assertUpgradeIdIsEnabled, enableUpgradeViaGovernance } = require("./utils");
 
@@ -37,13 +36,6 @@ const assertThatUpgradeIsEnabled = async (targetId, cutFile) => {
 };
 
 (async () => {
-    const $ = async (cmd, opts = {}) => {
-        if (typeof cmd !== "string") {
-            throw new Error("Command must be a string");
-        }
-        return await execa.command(cmd, { ...opts, shell: true, stdio: "inherit", cwd: rootFolder });
-    };
-
     const { argv } = yargs;
 
     const targetArg = argv._[0];

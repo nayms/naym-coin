@@ -10,6 +10,7 @@
     "devnet": "anvil",
     "commitlint": "commitlint --edit",
     "deploy": "./script/gemforge/deploy.js",
+    "approve-upgrade": "./script/gemforge/approveUpgrade.js",
     "query": "gemforge query"
   },
   "commitlint": {

@@ -22,6 +22,12 @@ Install pre-requisites:
 * [Foundry](https://book.getfoundry.sh/)
 * [Yarn](https://yarnpkg.com/)
 
+Then copy `.env.example` to `.env`:
+
+```shell
+$ cp .env.example .env
+```
+
 Then run:
 
 ```shell
@@ -46,40 +52,16 @@ To run a local devnet:
 $ yarn devnet
 ```
 
-## Deployment
+## Test an upgrade against Base fork
 
-* _The `owner` and `minter` are both initially set to be the deployment wallet's address._
-* _[CREATE2](https://book.getfoundry.sh/tutorials/create2-tutorial) is used for deployment, so the address will always be the same as long as the deployment wallet and bytecode are the same, irrespective of chain, nonce, etc._
+1. In a separate terminal, clone the [contracts-v3](https://github.com/nayms/contracts-v3) repo and run `make base-fork`. This should start a local node forked from Base mainnet.
+2. Back in this repo...
+3. Run `yarn deploy baseFork --upgrade-start`
+    * To run an [upgrade initialization]() use: `yarn deploy baseFork --upgrade-start --upgrade-init-contract <contract name> --upgrade-init-method <method name>`
+    * Note down the upgrade ID for use in the following command...
+4. Run `yarn approve-upgrade --id <upgrade ID> --contract 0x314d7f9e2f55B430ef656FBB98A7635D43a2261E#balances`
+5. Run `yarn deploy baseFork --upgrade-finish`
 
-### Local (anvil)
-
-To deploy locally, first run a local devnet:
-
-```shell
-$ yarn devnet
-```
-
-Then run:
-
-```shell
-$ yarn deploy-local
-```
-
-### Public (tesnets, mainnets)
-
-Set the following environment variables:
-
-```shell
-$ export PRIVATE_KEY="0x..."
-$ export RPC_URL="http://..."
-$ export CHAIN_ID="..."
-```
-
-Then run:
-
-```shell
-$ yarn deploy-public
-```
 
 ## License
 
