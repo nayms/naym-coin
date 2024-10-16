@@ -10,7 +10,6 @@ const mainnetSysAdminAddress = process.env.NAYM_SYS_ADMIN_ADDRESS;
 
 console.log("The sysAdminAddress is: ", sysAdminAddress);
 console.log("The mainnetSysAdminAddress is: ", mainnetSysAdminAddress);
-
 module.exports = {
   // Configuration file version
   version: 2,
