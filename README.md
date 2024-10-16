@@ -57,7 +57,7 @@ $ yarn devnet
 1. In a separate terminal, clone the [contracts-v3](https://github.com/nayms/contracts-v3) repo and run `make base-fork`. This should start a local node forked from Base mainnet.
 2. Back in this repo...
 3. Run `yarn deploy baseFork --upgrade-start`
-    * To run an [upgrade initialization]() use: `yarn deploy baseFork --upgrade-start --upgrade-init-contract <contract name> --upgrade-init-method <method name>`
+    * To run an [upgrade initialization](https://gemforge.xyz/development/initialization/#initialization-during-an-upgrade) use: `yarn deploy baseFork --upgrade-start --upgrade-init-contract <contract name> --upgrade-init-method <method name>`
     * Note down the upgrade ID for use in the following command...
 4. Run `yarn approve-upgrade --id <upgrade ID> --contract 0x314d7f9e2f55B430ef656FBB98A7635D43a2261E#balances`
 5. Run `yarn deploy baseFork --upgrade-finish`
