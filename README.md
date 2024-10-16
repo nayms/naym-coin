@@ -52,7 +52,9 @@ To run a local devnet:
 $ yarn devnet
 ```
 
-## Test an upgrade against Base fork
+## Test an upgrade against Base mainnnet
+
+To test a contract upgrade against the current token code on Base mainnet:
 
 1. In a separate terminal, clone the [contracts-v3](https://github.com/nayms/contracts-v3) repo and run `make base-fork`. This should start a local node forked from Base mainnet.
 2. Back in this repo...
