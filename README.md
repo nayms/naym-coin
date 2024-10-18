@@ -13,7 +13,7 @@ Features:
 
 ## On-chain addresses
 
-_TODO: Live deployed addresses here_
+* Base Mainnet: [0x314d7f9e2f55B430ef656FBB98A7635D43a2261E](https://basescan.org/address/0x314d7f9e2f55B430ef656FBB98A7635D43a2261E)
 
 ## Developer guide
 
