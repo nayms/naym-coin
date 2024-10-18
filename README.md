@@ -13,7 +13,7 @@ Features:
 
 ## On-chain addresses
 
-* Base Mainnet: [0x314d7f9e2f55B430ef656FBB98A7635D43a2261E](https://basescan.org/address/0x314d7f9e2f55B430ef656FBB98A7635D43a2261E)
+_TODO: will update here once TGE has completed_
 
 ## Developer guide
 
@@ -61,7 +61,7 @@ To test a contract upgrade against the current token code on Base mainnet:
 3. Run `yarn deploy baseFork --upgrade-start`
     * To run an [upgrade initialization](https://gemforge.xyz/development/initialization/#initialization-during-an-upgrade) use: `yarn deploy baseFork --upgrade-start --upgrade-init-contract <contract name> --upgrade-init-method <method name>`
     * Note down the upgrade ID for use in the following command...
-4. Run `yarn approve-upgrade --id <upgrade ID> --contract 0x314d7f9e2f55B430ef656FBB98A7635D43a2261E`
+4. Run `yarn approve-upgrade --id <upgrade ID> --contract <Base mainnet token address>`
 5. Run `yarn deploy baseFork --upgrade-finish`
 
 
