@@ -30,6 +30,8 @@ struct AppStorage {
     address minter;
     // upgrade initializations
     mapping(uint256 => bool) initComplete;
+    bytes32 DOMAIN_SEPARATOR;
+    mapping(address permitCaller => uint256 nonce) nonces;
 }
 
 library LibAppStorage {
