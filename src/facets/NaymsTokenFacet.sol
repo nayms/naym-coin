@@ -88,4 +88,61 @@ contract NaymsTokenFacet is Modifiers {
         AppStorage storage s = LibAppStorage.diamondStorage();
         return s.minter;
     }
+
+    /// @dev The EIP-712 typehash for the permit struct used by the contract
+    bytes32 public constant PERMIT_TYPEHASH =
+        keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
+
+    /**
+     * @dev See {IERC20Permit-permit}.
+     */
+    function permit(
+        address _owner,
+        address _spender,
+        uint256 _value,
+        uint256 _deadline,
+        uint8 _v,
+        bytes32 _r,
+        bytes32 _s
+    )
+        external
+    {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+
+        if (block.timestamp > _deadline) {
+            revert("ERC20Permit: expired deadline");
+        }
+
+        bytes32 structHash =
+            keccak256(abi.encode(PERMIT_TYPEHASH, _owner, _spender, _value, s.nonces[_owner]++, _deadline));
+
+        bytes32 hash = keccak256(abi.encodePacked("\x19\x01", s.DOMAIN_SEPARATOR, structHash));
+
+        address signer = ecrecover(hash, _v, _r, _s);
+        if (signer == address(0) || signer != _owner) {
+            revert("ERC20Permit: invalid signature");
+        }
+
+        LibERC20Token._approve(_owner, _spender, _value, true);
+    }
+
+    /**
+     * @dev Returns the current nonce for `owner`. This value must be included whenever a signature is generated for
+     * {permit}.
+     *
+     * Every successful call to {permit} increases ``owner``'s nonce by one. This
+     * prevents a signature from being used multiple times.
+     */
+    function nonces(address owner) external view returns (uint256) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        return s.nonces[owner];
+    }
+
+    /**
+     * @dev Returns the domain separator used in the encoding of the signature for {permit}, as defined by {EIP712}.
+     */
+    function DOMAIN_SEPARATOR() external view returns (bytes32) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        return s.DOMAIN_SEPARATOR;
+    }
 }
