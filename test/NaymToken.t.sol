@@ -236,6 +236,64 @@ contract NaymTokenTest is Test {
         assertEq(t.allowance(SENDER, SPENDER), 50);
     }
 
+    function testPermit() public {
+        uint256 privateKey = 0xBEEF;
+        address owner = vm.addr(privateKey);
+        address spender = address(0xCAFE);
+        uint256 value = 1e18;
+        uint256 deadline = block.timestamp;
+
+        // Get the domain separator and compute the permit hash
+        bytes32 structHash = keccak256(
+            abi.encode(
+                keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"),
+                owner,
+                spender,
+                value,
+                0, // nonce
+                deadline
+            )
+        );
+
+        bytes32 hash = keccak256(abi.encodePacked("\x19\x01", t.DOMAIN_SEPARATOR(), structHash));
+
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(privateKey, hash);
+
+        // Execute permit
+        t.permit(owner, spender, value, deadline, v, r, s);
+
+        // Verify allowance was set
+        assertEq(t.allowance(owner, spender), value);
+        assertEq(t.nonces(owner), 1);
+    }
+
+    function testPermitExpired() public {
+        uint256 privateKey = 0xBEEF;
+        address owner = vm.addr(privateKey);
+        address spender = address(0xCAFE);
+        uint256 value = 1e18;
+        uint256 deadline = block.timestamp - 1;
+
+        bytes32 structHash = keccak256(
+            abi.encode(
+                keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"),
+                owner,
+                spender,
+                value,
+                0,
+                deadline
+            )
+        );
+
+        bytes32 hash = keccak256(abi.encodePacked("\x19\x01", t.DOMAIN_SEPARATOR(), structHash));
+
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(privateKey, hash);
+
+        // Should revert with expired deadline
+        vm.expectRevert("ERC20Permit: expired deadline");
+        t.permit(owner, spender, value, deadline, v, r, s);
+    }
+
     function scheduleAndUpgradeDiamond(
         IDiamondCut.FacetCut[] memory _cut,
         address _init,
