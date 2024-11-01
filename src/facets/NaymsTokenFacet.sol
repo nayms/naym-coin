@@ -142,7 +142,16 @@ contract NaymsTokenFacet is Modifiers {
      * @dev Returns the domain separator used in the encoding of the signature for {permit}, as defined by {EIP712}.
      */
     function DOMAIN_SEPARATOR() external view returns (bytes32) {
-        AppStorage storage s = LibAppStorage.diamondStorage();
-        return s.DOMAIN_SEPARATOR;
+        // AppStorage storage s = LibAppStorage.diamondStorage();
+        // return s.DOMAIN_SEPARATOR;
+        return keccak256(
+            abi.encode(
+                keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"),
+                keccak256(bytes("Naym")), // name
+                keccak256(bytes("1")), // version
+                block.chainid,
+                address(this)
+            )
+        );
     }
 }
