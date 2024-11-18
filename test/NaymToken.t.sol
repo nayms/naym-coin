@@ -236,7 +236,7 @@ contract NaymTokenTest is Test {
         assertEq(t.allowance(SENDER, SPENDER), 50);
     }
 
-    function testPermit() public {
+    function test_Permit() public {
         uint256 privateKey = 0xBEEF;
         address owner = vm.addr(privateKey);
         address spender = address(0xCAFE);
@@ -267,7 +267,7 @@ contract NaymTokenTest is Test {
         assertEq(t.nonces(owner), 1);
     }
 
-    function testPermitExpired() public {
+    function test_PermitExpired() public {
         uint256 privateKey = 0xBEEF;
         address owner = vm.addr(privateKey);
         address spender = address(0xCAFE);
