@@ -5,7 +5,7 @@ import { AppStorage, LibAppStorage } from "../shared/AppStorage.sol";
 import { Modifiers } from "../shared/Modifiers.sol";
 import { LibHelpers } from "../libs/LibHelpers.sol";
 import { LibERC20Token } from "../libs/LibERC20Token.sol";
-import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 /**
  * @title Nayms token facet.
@@ -117,7 +117,7 @@ contract NaymsTokenFacet is Modifiers {
         bytes32 structHash =
             keccak256(abi.encode(PERMIT_TYPEHASH, _owner, _spender, _value, s.nonces[_owner]++, _deadline));
 
-        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", this.DOMAIN_SEPARATOR(), structHash));
+        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR(), structHash));
 
         address signer = ECDSA.recover(digest, _v, _r, _s);
         if (signer == address(0) || signer != _owner) {
@@ -142,7 +142,7 @@ contract NaymsTokenFacet is Modifiers {
     /**
      * @dev Returns the domain separator used in the encoding of the signature for {permit}, as defined by {EIP712}.
      */
-    function DOMAIN_SEPARATOR() external view returns (bytes32) {
+    function DOMAIN_SEPARATOR() public view returns (bytes32) {
         return keccak256(
             abi.encode(
                 keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"),

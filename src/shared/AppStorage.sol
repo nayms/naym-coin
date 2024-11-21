@@ -11,7 +11,8 @@ struct AppStorage {
     bool diamondInitialized;
     //// EIP712 domain separator ////
     uint256 initialChainId;
-    bytes32 initialDomainSeparator;
+    bytes32 initialDomainSeparator; // note: this is unused. Check the method DOMAIN_SEPARATOR() in the NaymsTokenFacet
+        // for the domain separator
     //// Reentrancy guard ////
     uint256 reentrancyStatus;
     //// NAYMS ERC20 TOKEN ////
@@ -30,7 +31,6 @@ struct AppStorage {
     address minter;
     // upgrade initializations
     mapping(uint256 => bool) initComplete;
-    bytes32 DOMAIN_SEPARATOR;
     mapping(address permitCaller => uint256 nonce) nonces;
 }
 
