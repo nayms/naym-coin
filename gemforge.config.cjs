@@ -67,7 +67,7 @@ module.exports = {
   // diamond configuration
   diamond: {
     // Whether to include public methods when generating the IDiamondProxy interface. Default is to only include external methods.
-    publicMethods: false,
+    publicMethods: true,
     init: {
       contract: "InitDiamond",
       function: "init",
