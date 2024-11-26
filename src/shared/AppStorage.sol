@@ -11,7 +11,7 @@ struct AppStorage {
     bool diamondInitialized;
     //// EIP712 domain separator ////
     uint256 initialChainId;
-    bytes32 initialDomainSeparator;
+    bytes32 initialDomainSeparator; // note: Deprecated. Use the method DOMAIN_SEPARATOR() in NaymsTokenFacet
     //// Reentrancy guard ////
     uint256 reentrancyStatus;
     //// NAYMS ERC20 TOKEN ////
@@ -30,6 +30,7 @@ struct AppStorage {
     address minter;
     // upgrade initializations
     mapping(uint256 => bool) initComplete;
+    mapping(address permitCaller => uint256 nonce) nonces;
 }
 
 library LibAppStorage {

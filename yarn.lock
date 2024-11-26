@@ -647,10 +647,10 @@ function-bind@^1.1.2:
   resolved "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.2.tgz#2c02d864d97f3ea6c8830c464cbd11ab6eab7a1c"
   integrity sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==
 
-gemforge@^2.12.1:
-  version "2.12.1"
-  resolved "https://registry.yarnpkg.com/gemforge/-/gemforge-2.12.1.tgz#7b02725359b61e74ba93550c22bfcbb4909f8089"
-  integrity sha512-3grKf0hHGKUG+TmVW1MOttxRM7yX1XgAZlSgHQOtmK0+V/Nrk4QVLydMNSJeTyFYKYHl10i1qpe7mBPJrWgMmQ==
+gemforge@^2.13.1:
+  version "2.13.1"
+  resolved "https://registry.yarnpkg.com/gemforge/-/gemforge-2.13.1.tgz#28f32423586fe41b9fe69b324a928ca15a036253"
+  integrity sha512-cJZbhvD1Zy5RRN2fMVnHdl2TzJLldD1+wNQnJiLeqDjspnaRTBxuVd1jQAZjAL3rQw0XK+LvxkZvvF3r0TEGDQ==
   dependencies:
     "@solidity-parser/parser" "^0.16.1"
     bigval "^1.7.0"
