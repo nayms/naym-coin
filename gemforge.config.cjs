@@ -111,52 +111,59 @@ module.exports = {
   },
   networks: {
     local: { rpcUrl: "http://localhost:8545" },
-    sepolia: { rpcUrl: process.env.ETH_SEPOLIA_RPC_URL },
-    mainnet: { rpcUrl: process.env.ETH_MAINNET_RPC_URL },
+    sepolia: {
+      rpcUrl: process.env.ETH_SEPOLIA_RPC_URL,
+      contractVerification: {
+        foundry: {
+          apiUrl: "https://api-sepolia.etherscan.io/api",
+          apiKey: () => process.env.ETHERSCAN_API_KEY,
+        },
+      },
+    },
+    mainnet: {
+      rpcUrl: process.env.ETH_MAINNET_RPC_URL,
+      contractVerification: {
+        foundry: {
+          apiUrl: "https://api.etherscan.io/api",
+          apiKey: () => process.env.ETHERSCAN_API_KEY,
+        },
+      },
+    },
     baseSepolia: {
       rpcUrl: process.env.BASE_SEPOLIA_RPC_URL,
-      verifiers: [
-        {
-          verifierName: "etherscan",
-          verifierUrl: "https://api-sepolia.basescan.org/api",
-          verifierApiKey: process.env.BASESCAN_API_KEY,
+      contractVerification: {
+        foundry: {
+          apiUrl: "https://api-sepolia.basescan.org/api",
+          apiKey: () => process.env.BASESCAN_API_KEY,
         },
-        {
-          verifierName: "blockscout", // needed for louper
-          verifierUrl: "https://base-sepolia.blockscout.com/api",
-          verifierApiKey: process.env.BLOCKSCOUT_API_KEY,
-        },
-      ],
+      },
     },
     base: {
       rpcUrl: process.env.BASE_MAINNET_RPC_URL,
-      verifiers: [
-        {
-          verifierName: "etherscan",
-          verifierUrl: "https://api.basescan.org/api",
-          verifierApiKey: process.env.BASESCAN_API_KEY,
+      contractVerification: {
+        foundry: {
+          apiUrl: "https://api.basescan.org/api",
+          apiKey: () => process.env.BASESCAN_API_KEY,
         },
-      ],
+      },
     },
     aurora: {
       rpcUrl: process.env.AURORA_MAINNET_RPC_URL,
-      verifiers: [
-        {
-          verifierName: "aurora",
-          verifierUrl: "https://explorer.mainnet.aurora.dev/api",
-          verifierApiKey: process.env.BLOCKSCOUT_API_KEY,
+      contractVerification: {
+        foundry: {
+          apiUrl: "https://explorer.mainnet.aurora.dev/api",
+          apiKey: () => process.env.BLOCKSCOUT_API_KEY,
         },
-      ],
+      },
     },
     auroraTestnet: {
       rpcUrl: process.env.AURORA_TESTNET_RPC_URL,
-      verifiers: [
-        {
-          verifierName: "aurora",
-          verifierUrl: "https://explorer.testnet.aurora.dev/api",
-          verifierApiKey: process.env.BLOCKSCOUT_API_KEY,
+      contractVerification: {
+        foundry: {
+          apiUrl: "https://explorer.testnet.aurora.dev/api",
+          apiKey: () => process.env.BLOCKSCOUT_API_KEY,
         },
-      ],
+      },
     },
   },
   targets: {
