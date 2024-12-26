@@ -1,23 +1,23 @@
 // SPDX-License-Identifier: GPLv3
 pragma solidity ^0.8.20;
 
-import { Test, console as c, Vm } from "forge-std/Test.sol";
+import {Test, console as c, Vm} from "forge-std/Test.sol";
 
-import { IERC20Errors } from "openzeppelin/interfaces/draft-IERC6093.sol";
-import { NaymsOwnershipFacet } from "src/facets/NaymsOwnershipFacet.sol";
+import {IERC20Errors} from "openzeppelin/interfaces/draft-IERC6093.sol";
+import {NaymsOwnershipFacet} from "src/facets/NaymsOwnershipFacet.sol";
 
-import { IDiamondCut } from "lib/diamond-2-hardhat/contracts/interfaces/IDiamondCut.sol";
-import { DiamondProxy } from "src/generated/DiamondProxy.sol";
-import { IDiamondProxy } from "src/generated/IDiamondProxy.sol";
-import { LibDiamondHelper } from "src/generated/LibDiamondHelper.sol";
-import { LibGovernance } from "src/libs/LibGovernance.sol";
-import { LibACL } from "src/libs/LibACL.sol";
-import { LibHelpers } from "src/libs/LibHelpers.sol";
-import { InitDiamond } from "src/init/InitDiamond.sol";
-import { NaymsTokenFacet } from "src/facets/NaymsTokenFacet.sol";
-import { Modifiers } from "src/shared/Modifiers.sol";
-import { StdStyle } from "forge-std/StdStyle.sol";
-import { LibConstants as LC } from "src/libs/LibConstants.sol";
+import {IDiamondCut} from "lib/diamond-2-hardhat/contracts/interfaces/IDiamondCut.sol";
+import {DiamondProxy} from "src/generated/DiamondProxy.sol";
+import {IDiamondProxy} from "src/generated/IDiamondProxy.sol";
+import {LibDiamondHelper} from "src/generated/LibDiamondHelper.sol";
+import {LibGovernance} from "src/libs/LibGovernance.sol";
+import {LibACL} from "src/libs/LibACL.sol";
+import {LibHelpers} from "src/libs/LibHelpers.sol";
+import {InitDiamond} from "src/init/InitDiamond.sol";
+import {NaymsTokenFacet} from "src/facets/NaymsTokenFacet.sol";
+import {Modifiers} from "src/shared/Modifiers.sol";
+import {StdStyle} from "forge-std/StdStyle.sol";
+import {LibConstants as LC} from "src/libs/LibConstants.sol";
 
 contract NaymTokenTest is Test {
     using StdStyle for *;
@@ -45,11 +45,11 @@ contract NaymTokenTest is Test {
         c.log("\n -- D01 Deployment Defaults\n");
         c.log("block.chainid", block.chainid);
 
-        bool BOOL_FORK_TEST = vm.envOr({ name: "BOOL_FORK_TEST", defaultValue: false });
-        tAddress = vm.envOr({ name: "DIAMOND_ADDRESS", defaultValue: address(0) });
+        bool BOOL_FORK_TEST = vm.envOr({name: "BOOL_FORK_TEST", defaultValue: false});
+        tAddress = vm.envOr({name: "DIAMOND_ADDRESS", defaultValue: address(0)});
 
         c.log("Are tests being run on a fork?".yellow().bold(), BOOL_FORK_TEST);
-        bool TESTS_FORK_UPGRADE_DIAMOND = vm.envOr({ name: "TESTS_FORK_UPGRADE_DIAMOND", defaultValue: true });
+        bool TESTS_FORK_UPGRADE_DIAMOND = vm.envOr({name: "TESTS_FORK_UPGRADE_DIAMOND", defaultValue: true});
         c.log("Are we testing diamond upgrades on a fork?".yellow().bold(), TESTS_FORK_UPGRADE_DIAMOND);
 
         if (BOOL_FORK_TEST) {
@@ -68,7 +68,7 @@ contract NaymTokenTest is Test {
                 vm.createSelectFork(getChain(block.chainid).rpcUrl, FORK_BLOCK);
             }
             // Get diamond address from env
-            tAddress = vm.envOr({ name: "DIAMOND_ADDRESS", defaultValue: address(0) });
+            tAddress = vm.envOr({name: "DIAMOND_ADDRESS", defaultValue: address(0)});
 
             t = IDiamondProxy(tAddress);
 
@@ -290,15 +290,11 @@ contract NaymTokenTest is Test {
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(privateKey, hash);
 
         // Should revert with expired deadline
-        vm.expectRevert("ERC20Permit: expired deadline");
+        vm.expectRevert(NaymsTokenFacet.ERC20PermitDeadlineExpired.selector);
         t.permit(owner, spender, value, deadline, v, r, s);
     }
 
-    function scheduleAndUpgradeDiamond(
-        IDiamondCut.FacetCut[] memory _cut,
-        address _init,
-        bytes memory _calldata
-    )
+    function scheduleAndUpgradeDiamond(IDiamondCut.FacetCut[] memory _cut, address _init, bytes memory _calldata)
         internal
     {
         // 1. schedule upgrade

@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.24;
 
-import { AppStorage, LibAppStorage } from "../shared/AppStorage.sol";
-import { Modifiers } from "../shared/Modifiers.sol";
-import { LibHelpers } from "../libs/LibHelpers.sol";
-import { LibERC20Token } from "../libs/LibERC20Token.sol";
-import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import {AppStorage, LibAppStorage} from "../shared/AppStorage.sol";
+import {Modifiers} from "../shared/Modifiers.sol";
+import {LibHelpers} from "../libs/LibHelpers.sol";
+import {LibERC20Token} from "../libs/LibERC20Token.sol";
+import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 /**
  * @title Nayms token facet.
@@ -14,6 +14,9 @@ import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
  */
 contract NaymsTokenFacet is Modifiers {
     using LibHelpers for *;
+
+    error ERC20PermitDeadlineExpired();
+    error ERC20PermitInvalidSignature();
 
     /**
      * @dev Get total supply of token.
@@ -105,13 +108,11 @@ contract NaymsTokenFacet is Modifiers {
         uint8 _v,
         bytes32 _r,
         bytes32 _s
-    )
-        external
-    {
+    ) external {
         AppStorage storage s = LibAppStorage.diamondStorage();
 
         if (block.timestamp > _deadline) {
-            revert("ERC20Permit: expired deadline");
+            revert ERC20PermitDeadlineExpired();
         }
 
         bytes32 structHash =
@@ -121,7 +122,7 @@ contract NaymsTokenFacet is Modifiers {
 
         address signer = ECDSA.recover(digest, _v, _r, _s);
         if (signer == address(0) || signer != _owner) {
-            revert("ERC20Permit: invalid signature");
+            revert ERC20PermitInvalidSignature();
         }
 
         LibERC20Token._approve(_owner, _spender, _value, true);
