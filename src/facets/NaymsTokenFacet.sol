@@ -140,18 +140,17 @@ contract NaymsTokenFacet is Modifiers {
         return s.nonces[owner];
     }
 
+    bytes32 public constant EIP712DOMAIN_TYPEHASH =
+        keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
+
+    bytes32 public constant NAYM_TYPEHASH = keccak256(bytes("Naym"));
+    bytes32 public constant VERSION_TYPEHASH = keccak256(bytes("1"));
+
     /**
      * @dev Returns the domain separator used in the encoding of the signature for {permit}, as defined by {EIP712}.
      */
     function DOMAIN_SEPARATOR() public view returns (bytes32) {
-        return keccak256(
-            abi.encode(
-                keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"),
-                keccak256(bytes("Naym")), // name
-                keccak256(bytes("1")), // version
-                block.chainid,
-                address(this)
-            )
-        );
+        return
+            keccak256(abi.encode(EIP712DOMAIN_TYPEHASH, NAYM_TYPEHASH, VERSION_TYPEHASH, block.chainid, address(this)));
     }
 }
