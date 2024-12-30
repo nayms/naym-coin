@@ -82,7 +82,7 @@ module.exports = {
     preBuild: "",
     postBuild: "",
     preDeploy: "",
-    postDeploy: "./script/gemforge/verify.js",
+    postDeploy: "",
   },
   // Wallets to use for deployment
   wallets: {
